@@ -1,0 +1,33 @@
+export interface EmailAccountViewModel {
+  ID: number;
+  OwnerGuid: string;
+  OwnerFlag: number;
+  DisplayName: string;
+  FullName: string;
+  EmailAddress: string;
+  ReplyAddress: string;
+  Pop3Server: string;
+  Pop3AccountName: string;
+  Pop3Password: string;
+  Pop3DeleteFromServer: boolean;
+  SmtpServer: string;
+  SmtpAccountName: string;
+  SmtpPassword: string;
+  AutoSynchronize: boolean;
+  MailServerType: string;
+  IncomingServerEncryptedConnectionType: string;
+  OutgoingServerEncryptedConnectionType: string;
+  Pop3Port: number;
+  SmtpPort: number;
+  SmtpMaxSendPerMinute: number;
+  RequireSecurePasswordAuthentication: boolean;
+  Guid: string;
+  BounceCount: number;
+  LastresponseTime: Date;
+  LastResponse: string;
+  AuthenticationMethod: number;
+  IsDefault: boolean;
+  HourlySendLimit: number;
+  DailySendLimit: number;
+  IsSendable: boolean;
+}

@@ -1,0 +1,244 @@
+.ActionBarBorderActive {
+  border: 1px dashed gray;
+  padding: 5px;
+  margin: 5px;
+  border-radius: 5px;
+  background-color: #fff;
+  display: flex;
+  flex-direction: column;
+}
+
+.ActionBarBorderDeactive {
+  border: 1px solid #ffffff;
+  padding: 0px;
+  border-radius: 5px;
+  background-color: #fff;
+  margin-bottom: 10px;
+}
+
+.ActionBarBorderDeactive .didgah-fieldset-wrapper {
+  padding-top: 0 !important;
+}
+
+.DDM-core-Row {
+  clear: both;
+}
+
+.ColumnActive {
+  background-color: #f1f1f1;
+  border-style: none;
+  border-radius: 5px;
+  margin: 5px;
+  height: 30px;
+}
+
+.ColumnDeActive {
+  background-color: #fff;
+  border-style: none;
+  border-radius: 5px;
+  margin: 5px;
+}
+
+.DDM-core-designerTabs > .didgah-tabs-content {
+  padding: 0px !important;
+}
+
+.DDM-core-FieldTabPane {
+  width: 100%;
+  flex-direction: column;
+}
+
+.DDM-hasError-column-active {
+  border: 1px dashed red;
+  background-color: #ffe0e0 !important;
+}
+
+.DDM-hasError-column-deactive {
+  background-color: #ffe0e0 !important;
+  border-color: #fdbdbd !important;
+}
+
+.DDM-hasError-fieldset {
+  margin-top: 5px;
+  background-color: #ff3535;
+  border: 1px dashed #ff3535;
+  padding-top: 1px;
+}
+
+.DDM-ActionBar-Error-Message {
+  background-color: #ffecec;
+  color: #c50000;
+  border: solid 1px red;
+  border-radius: 5px;
+  padding: 3px 10px;
+  font-size: 12px;
+  margin-right: 5px;
+  margin-left: 5px;
+}
+
+.DDM-hasError-DesignPane-Alert {
+  display: block;
+  border-radius: 5px;
+  color: rgb(255, 3, 3);
+  padding: 5px 5px;
+  background-color: white;
+  text-align: center;
+  font-size: 12px;
+  border-style: solid;
+  border-width: 1px;
+}
+
+.DDM-qbuilder .didgah-query-builder-tbody {
+  background-color: #fff;
+}
+
+.DDM-qbuilder .col-condition {
+  padding: 0 3px;
+}
+
+.DDM-container-focus-overlay {
+  overflow-y: hidden;
+  z-index: 1;
+}
+
+.DDM-container-focus-overlay::before {
+  content: " ";
+  background-color: black;
+  opacity: 0.7;
+  z-index: 99999;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+}
+
+.DDM-container-focus {
+  box-shadow: 0px 0px 10px 0px grey;
+  border-style: solid;
+  border-color: white;
+  z-index: 999999;
+  position: relative;
+}
+
+.DDM-container-hidden {
+  display: none;
+}
+
+.DDM-formsamplevalidation-error-ul {
+  border: solid 1px red;
+  background: #ffdbdb;
+  border-radius: 5px;
+  padding: 10px;
+  margin-top: 30px;
+  color: red;
+  list-style: disc;
+}
+
+.DDM-formsamplevalidation-error-li {
+  padding-right: 0px;
+  margin-right: 15px;
+}
+
+.DDM_CloseSidebar .didgahicon.didgahicon-arrow-left {
+  font-size: 30px;
+}
+
+.DDM_Properties_sidebar > .didgah-formLayout-sidebar-continer {
+  overflow-y: hidden;
+}
+
+.DDM_Properties_sidebar {
+  .didgah-form-item-label {
+    display: inline-block !important;
+  }
+}
+
+.DDM_Tab {
+  height: calc(100% - 28px) !important;
+}
+
+.DDM_WidgetProperties {
+  flex-wrap: nowrap !important;
+}
+
+.DDM_Column_Tag_Order_Editor_Move_Button {
+  min-width: 30px !important;;
+  min-height: 20px !important;;
+  padding: 0;
+  margin: 0;
+}
+
+.DDM_Column_Tag_Order_Editor_Wrapper {
+  height: 35px !important;;
+  margin: 5px 1.2px !important;;
+  padding: 3px 5px !important;;
+}
+
+// ── OperationOnEvent card list ─────────────────────────────────────────────
+.ooe-list {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 8px;
+
+  &__toolbar {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 8px;
+  }
+
+  &__add {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background-color: #8dc63f;
+    color: #fff;
+    cursor: pointer;
+    font-size: 16px;
+
+    &:hover {
+      background-color: #7ab035;
+    }
+  }
+
+  &__cards {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    overflow-y: auto;
+  }
+
+  &__card {
+    width: 100%;
+    cursor: pointer;
+
+    &:hover {
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+    }
+  }
+
+  &__card-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-left: 12px;
+  }
+
+  &__card-title {
+    flex: 1;
+    text-align: right;
+    font-size: 14px;
+  }
+
+  &__icon {
+    font-size: 16px;
+    cursor: pointer;
+    transition: opacity 0.2s;
+
+    &:hover { opacity: 0.75; }
+    &--delete { color: #f5222d; }
+    &--edit   { color: #fa8c16; }
+  }
+}

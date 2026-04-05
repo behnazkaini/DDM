@@ -1,0 +1,5 @@
+export enum StateResult {
+  Processing = 0,
+  Failure = 1,
+  Success = 2,
+}

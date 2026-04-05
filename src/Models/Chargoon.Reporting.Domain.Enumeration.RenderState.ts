@@ -1,0 +1,16 @@
+export enum RenderState {
+  ReportRequest = 1,
+  InitialDataGathering = 2,
+  Pending = 3,
+  FetchingData = 4,
+  PreRender = 5,
+  Rendering = 6,
+  SendingNotification = 7,
+  InsertingAlert = 8,
+  ReceivedByViewer = 9,
+  Exception = 10,
+  ThreadAbortException = 11,
+  OpenedFromAlert = 12,
+  Timeout = 13,
+  Completed = 14,
+}

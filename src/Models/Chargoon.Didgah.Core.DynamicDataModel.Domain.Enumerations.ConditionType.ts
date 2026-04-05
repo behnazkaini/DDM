@@ -1,0 +1,15 @@
+export enum ConditionType {
+  Undefined = 0,
+  HasValue = 1,
+  HasNotValue = 2,
+  Equals = 3,
+  NotEquals = 4,
+  GreaterEquals = 5,
+  LowerEquals = 6,
+  Greater = 7,
+  Lower = 8,
+  Contains = 9,
+  NotContains = 10,
+  StartsWith = 11,
+  EndsWith = 12,
+}

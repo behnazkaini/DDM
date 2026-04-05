@@ -1,0 +1,27 @@
+{
+  "name": "@didgah/ddm-plugins",
+  "version": "1.0.1",
+  "main": "./lib/plugins.js",
+  "license": "MIT",
+  "types": "./lib/plugins.d.ts",
+  "scripts": {
+    "publish:current": "npm publish",
+    "publish:patch": "npm version patch && npm publish",
+    "publish:minor": "npm version minor && npm publish",
+    "publish:major": "npm version major && npm publish"
+  },
+  "publishConfig": {
+    "registry": "http://devops.chargoon.net:8081/repository/npm_didgah_registry/"
+  },
+  "dependencies": {
+    "@types/react": "18.3.3",
+    "@models/didgah-components": "^2.0.0",
+    "@types/didgah-components": "^5.0.0",
+    "@types/didgah-common": "^2.0.0",
+    "@types/didgah-global": "^3.0.0",
+    "@types/didgah-legacy": "^2.0.0"
+  },
+  "files": [
+    "lib"
+  ]
+}

@@ -1,0 +1,17 @@
+export enum TransportableItemType {
+  Unknown = 0,
+  EceLetter = 1,
+  EceReceipt = 2,
+  EcePersuitRequest = 3,
+  EcePersuitResponse = 4,
+  Email = 5,
+  OTP = 6,
+  SingleSms = 7,
+  Tracking = 8,
+  LetterActiveTracking = 9,
+  WorkflowSms = 10,
+  LoginSms = 11,
+  PaymentListSms = 12,
+  Calendar = 13,
+  DidgahMessenger = 14,
+}

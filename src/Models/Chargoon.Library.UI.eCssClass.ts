@@ -1,0 +1,16 @@
+export enum eCssClass {
+  input = 0,
+  textInput = 1,
+  dateInput = 2,
+  emailInput = 3,
+  ipInput = 4,
+  numberInput = 5,
+  fieldInput = 6,
+  parameterInput = 7,
+  readOnlyInput = 8,
+  telInput = 9,
+  timeInput = 10,
+  urlInput = 11,
+  datePicker = 12,
+  ssnInput = 13,
+}

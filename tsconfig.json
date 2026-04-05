@@ -1,0 +1,40 @@
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "useDefineForClassFields": true,
+    "lib": ["ES2020", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
+    "skipLibCheck": true,
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
+    "isolatedModules": true,
+    "moduleDetection": "force",
+    "noEmit": true,
+    "jsx": "react-jsx",
+    "strict": false,
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
+    "noFallthroughCasesInSwitch": true,
+    "baseUrl": ".",
+    "paths": {
+      "didgah/ant-core-component":            ["src/mocks/antCoreComponent.tsx"],
+      "didgah/common":                        ["src/mocks/common.ts"],
+      "blockly":                              ["src/mocks/blockly.ts"],
+      "@didgah-components/ant-table/utils":   ["src/mocks/antTableUtils.tsx"],
+      "@didgah-components/ant-table":         ["src/mocks/antTable.tsx"],
+      "Utility/language":                     ["src/mocks/utilityLanguage.ts"],
+      "Utility/helpers":                      ["src/mocks/utilityHelpers.ts"],
+      "Utility/encryption":                   ["src/mocks/utilityEncryption.ts"],
+      "Core.DynamicDataModel/*":              ["../Core.DynamicDataModel/*"],
+      "Models/*":                             ["../Models/*"],
+      "Utility/*":                            ["../Utility/*"]
+    }
+  },
+  "include": [
+    "src",
+    "../Core.DynamicDataModel/Renderer/**/*.ts",
+    "../Core.DynamicDataModel/Renderer/**/*.tsx",
+    "../Models/**/*.ts",
+    "../Utility/**/*.ts"
+  ]
+}

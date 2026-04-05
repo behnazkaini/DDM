@@ -1,0 +1,15 @@
+export enum PermissionModificationType {
+  InitializeHistory = 0,
+  AddPermissionGroup = 1,
+  EditPermissionGroup = 2,
+  DeletePermissionGroup = 3,
+  CopyPermissionGroup = 4,
+  UserPermissionGroupAccessChange = 5,
+  StaffPermissionGroupAccessChange = 6,
+  UserAccessCodeChange = 7,
+  StaffAccessCodeChange = 8,
+  AddStaffToPermissionGroup = 9,
+  DeleteStaffFromPermissionGroup = 10,
+  AddUserToPermissionGroup = 11,
+  DeleteUserFromPermissionGroup = 12,
+}

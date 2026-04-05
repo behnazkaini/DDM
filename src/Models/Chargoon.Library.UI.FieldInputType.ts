@@ -1,0 +1,15 @@
+export enum FieldInputType {
+  TextBox = 0,
+  DecimalTextBox = 1,
+  DropDown = 2,
+  CheckBox = 3,
+  DatePicker = 4,
+  TimeTextBox = 5,
+  Hidden = 6,
+  PopupSelectable = 7,
+  SelectButton = 8,
+  Indexer = 9,
+  Label = 10,
+  FileUploader = 11,
+  SearchDropDown = 12,
+}

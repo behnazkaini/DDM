@@ -1,0 +1,39 @@
+.dynamic-data-model-modeler {
+	display: flex;
+	width: 100%;
+	height: 100%;
+
+	&_properties {
+		display: flex;
+		flex-direction: column;
+		width: 300px;
+		background-color: #fff;
+		.didgah-formLayout-content {
+		background-color: #fff;
+		}
+	}
+
+	&_properties_header {
+		color: var(--title-color);
+    padding: 5px;
+    margin-bottom: 10px;
+    font-size: var(--font-size-lg);
+    border-bottom: 1px solid var(--title-color);
+	}
+
+	&_properties_title {
+		display: inline-block;
+    margin-bottom: 10px;
+    font-size: var(--font-size-md);
+	}
+
+	&_properties_content {
+		padding: 5px;
+	}
+
+	&_diagram {
+		direction: ltr;
+		flex: 1;
+		height: 100%;
+	}
+}
