@@ -3,4 +3,5 @@ export enum LayoutItemType {
   Column = 2,
   Reference = 3,
   SubLayout = 4,
+  Others = 5,
 }

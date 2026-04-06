@@ -3,7 +3,7 @@ import {
 	GlobalPropsContext,
 } from "../../../store/reducers/designLayoutSlice";
 import useFloorStack from '../../../hooks/useFloorStack';
-import { LayoutItemType } from '../../../../Models/Chargoon.Didgah.Core.DynamicDataModel.Domain.Enumerations.LayoutItemType';
+import { LayoutItemType } from '../../../../../Models/Chargoon.Didgah.Core.DynamicDataModel.Domain.Enumerations.LayoutItemType';
 
 function useLayoutItems() {
 	const globalProps = React.useContext(GlobalPropsContext);

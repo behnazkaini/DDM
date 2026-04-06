@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Button, Card, Col, Fieldset, Icon, Input, Modal, Row, SelectEx, SelectItem } from 'didgah/ant-core-component';
+import { Button, Card, Col, Fieldset, Icon, Input, Modal, Popconfirm, Row, SelectEx, SelectItem } from 'didgah/ant-core-component';
 import { guid, translate } from 'didgah/common';
 import { ColumnActions, Events, ReferenceActions } from '../../../../typings/Core.DynamicDataModel/Enums';
 import { LayoutItemType } from '../../../../Models/Chargoon.Didgah.Core.DynamicDataModel.Domain.Enumerations.LayoutItemType';
@@ -201,7 +201,7 @@ function OperationOnEventDetail({ selectedRecord, onSave, onCancel }: Props) {
 
   function renderActionEditRow(draft: DraftAction, key?: string) {
     return (
-      <Card key={key} bordered style={{ marginBottom: 6, borderColor: '#52c41a' }} bodyStyle={{ padding: '8px 12px' }}>
+      <Card>
         <Row gutter={8} align="middle">
           <Col flex="auto">
             <SelectEx
@@ -273,21 +273,18 @@ function OperationOnEventDetail({ selectedRecord, onSave, onCancel }: Props) {
       width="100%"
     >
       {/* Events */}
-      <Fieldset legend={translate('Events')}>
+      <Fieldset legend={translate('Events')} simpleMode>
         <p style={{ fontSize: 12, color: '#888', marginBottom: 8 }}>{translate('EventsHint')}</p>
 
         {eventRows.map(row => {
           const isEditing = draftEvent?.id === row.id;
           return (
             <Card
-              key={row.id}
-              bordered
-              style={{ marginBottom: 6, borderColor: isEditing ? '#52c41a' : undefined }}
-              bodyStyle={{ padding: '8px 12px' }}
+              style={{ borderColor: isEditing ? '#52c41a' : undefined }}
             >
               {isEditing ? (
-                <Row gutter={8} align="middle">
-                  <Col flex="auto">
+                <Row >
+                  <Col md={6}>
                     <SelectEx
                       dataSource={layoutItems}
                       value={draftEvent.field}
@@ -298,7 +295,7 @@ function OperationOnEventDetail({ selectedRecord, onSave, onCancel }: Props) {
                       style={{ width: '100%' }}
                     />
                   </Col>
-                  <Col span={8}>
+                  <Col md={8}>
                     <SelectEx
                       dataSource={eventsDataSource}
                       value={draftEvent.operator}
@@ -306,22 +303,35 @@ function OperationOnEventDetail({ selectedRecord, onSave, onCancel }: Props) {
                       style={{ width: '100%' }}
                     />
                   </Col>
-                  <Col>
+                  <Col md={8}>
                     <Button size="small" icon="check" onClick={handleConfirmEvent} style={{ marginLeft: 4 }} />
                     <Button size="small" icon="close" onClick={() => setDraftEvent(null)} style={{ marginLeft: 4 }} />
                   </Col>
                 </Row>
               ) : (
-                <Row gutter={8} align="middle">
-                  <Col flex="auto">
+                <Row>
+                  <Col md={6}>
                     <SelectEx dataSource={layoutItems} value={row.field} disabled style={{ width: '100%' }} />
                   </Col>
-                  <Col span={8}>
+                  <Col md={8}>
                     <SelectEx dataSource={eventsDataSource} value={row.operator} disabled style={{ width: '100%' }} />
                   </Col>
-                  <Col>
-                    <Button size="small" icon="delete" onClick={() => handleDeleteEvent(row.id)} style={{ color: '#f5222d', borderColor: '#f5222d', marginLeft: 4 }} />
-                    <Button size="small" icon="edit" onClick={() => handleEditEvent(row)} style={{ color: '#fa8c16', borderColor: '#fa8c16', marginLeft: 4 }} />
+                  <Col md={8}>
+                    <div className='ooe-list__card-actions'>
+                      <Icon
+                        type='edit'
+                        className='ooe-list__icon ooe-list__icon--edit'
+                        onClick={() => handleEditEvent(row)}
+                      />
+                      <Popconfirm
+                        title={translate('AreYouSure')}
+                        onConfirm={() => handleDeleteEvent(row.id)}
+                        okText={translate('Yes')}
+                        cancelText={translate('No')}
+                      >
+                        <Icon type='delete' className='ooe-list__icon ooe-list__icon--delete' />
+                      </Popconfirm>
+                    </div>
                   </Col>
                 </Row>
               )}
@@ -330,12 +340,12 @@ function OperationOnEventDetail({ selectedRecord, onSave, onCancel }: Props) {
         })}
 
         {draftEvent && !draftEvent.id && (
-          <Card bordered style={{ marginBottom: 6, borderColor: '#52c41a' }} bodyStyle={{ padding: '8px 12px' }}>
+          <Card>
             {treeLoading || !treeStore.current
               ? <span>{translate('Loading')}</span>
               : (
-                <Row gutter={8} align="middle">
-                  <Col flex="auto">
+                <Row>
+                  <Col md={6}>
                     <TreeSelect
                       store={treeStore.current}
                       onSelect={(_key: any, _node: any, record: any) => {
@@ -348,7 +358,7 @@ function OperationOnEventDetail({ selectedRecord, onSave, onCancel }: Props) {
                       }}
                     />
                   </Col>
-                  <Col span={8}>
+                  <Col md={8}>
                     <SelectEx
                       dataSource={eventsDataSource}
                       value={draftEvent.operator}
@@ -356,7 +366,7 @@ function OperationOnEventDetail({ selectedRecord, onSave, onCancel }: Props) {
                       style={{ width: '100%' }}
                     />
                   </Col>
-                  <Col>
+                  <Col md={8}>
                     <Button size="small" icon="check" onClick={handleConfirmEvent} style={{ marginLeft: 4 }} />
                     <Button size="small" icon="close" onClick={() => setDraftEvent(null)} style={{ marginLeft: 4 }} />
                   </Col>
@@ -376,7 +386,7 @@ function OperationOnEventDetail({ selectedRecord, onSave, onCancel }: Props) {
       </Fieldset>
 
       {/* Actions */}
-      <Fieldset legend={translate('Actions')}>
+      <Fieldset legend={translate('Actions')} simpleMode>
         <p style={{ fontSize: 12, color: '#888', marginBottom: 8 }}>{translate('ActionsHint')}</p>
 
         {actionRows.map(row => {
@@ -384,17 +394,30 @@ function OperationOnEventDetail({ selectedRecord, onSave, onCancel }: Props) {
             return renderActionEditRow(draftAction, row.id);
           }
           return (
-            <Card key={row.id} bordered style={{ marginBottom: 6 }} bodyStyle={{ padding: '8px 12px' }}>
+            <Card>
               <Row gutter={8} align="middle">
-                <Col flex="auto">
+                <Col md={6}>
                   <SelectEx dataSource={layoutItems} value={row.field} disabled style={{ width: '100%' }} />
                 </Col>
-                <Col span={8}>
+                <Col md={8}>
                   <SelectEx dataSource={getActionsDs(row.field)} value={row.operator} disabled style={{ width: '100%' }} />
                 </Col>
-                <Col>
-                  <Button size="small" icon="delete" onClick={() => handleDeleteAction(row.id)} style={{ color: '#f5222d', borderColor: '#f5222d', marginLeft: 4 }} />
-                  <Button size="small" icon="edit" onClick={() => handleEditAction(row)} style={{ color: '#fa8c16', borderColor: '#fa8c16', marginLeft: 4 }} />
+                <Col md={8}>
+                  <div className='ooe-list__card-actions'>
+                    <Icon
+                      type='edit'
+                      className='ooe-list__icon ooe-list__icon--edit'
+                      onClick={() => handleEditAction(row)}
+                    />
+                    <Popconfirm
+                      title={translate('AreYouSure')}
+                      onConfirm={() => handleDeleteAction(row.id)}
+                      okText={translate('Yes')}
+                      cancelText={translate('No')}
+                    >
+                      <Icon type='delete' className='ooe-list__icon ooe-list__icon--delete' />
+                    </Popconfirm>
+                  </div>
                 </Col>
               </Row>
             </Card>

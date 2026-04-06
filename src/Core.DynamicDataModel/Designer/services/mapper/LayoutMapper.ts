@@ -17,7 +17,12 @@ import { ModifyInlineArchiveLayoutViewModel } from "../../../../Models/Chargoon.
 import { ModifyLayoutViewModel } from "../../../../Models/Chargoon.Didgah.Core.DynamicDataModel.BaseAPI.ViewModels.ModifyLayoutViewModel";
 import { SaveLayoutChangesViewModel } from "../../../../Models/Chargoon.Didgah.Core.DynamicDataModel.BaseAPI.ViewModels.SaveLayoutChangesViewModel";
 import { LayoutType } from "../../../../Models/Chargoon.Didgah.Core.DynamicDataModel.Domain.Enumerations.LayoutType";
-import { ArchiveLayoutDesignerViewModel, DefineArchiveLayoutDesignerViewModel, DefineLayoutDesignerViewModel, InlineArchiveLayoutDesignerViewModel, LayoutViewModelWithState } from "../../../../typings/Core.DynamicDataModel/Types";
+import { LayoutItemType } from "../../../../Models/Chargoon.Didgah.Core.DynamicDataModel.Domain.Enumerations.LayoutItemType";
+import { SaveLayoutItemViewModel } from "../../../../Models/Chargoon.Didgah.Core.DynamicDataModel.BaseAPI.ViewModels.SaveLayoutItemViewModel";
+import { SaveLayoutItemColumnViewModel } from "../../../../Models/Chargoon.Didgah.Core.DynamicDataModel.BaseAPI.ViewModels.SaveLayoutItemColumnViewModel";
+import { SaveLayoutItemReferenceViewModel } from "../../../../Models/Chargoon.Didgah.Core.DynamicDataModel.BaseAPI.ViewModels.SaveLayoutItemReferenceViewModel";
+import { SaveSubLayoutItemViewModel } from "../../../../Models/Chargoon.Didgah.Core.DynamicDataModel.BaseAPI.ViewModels.SaveSubLayoutItemViewModel";
+import { ArchiveLayoutDesignerViewModel, DefineArchiveLayoutDesignerViewModel, DefineLayoutDesignerViewModel, FormEvents, InlineArchiveLayoutDesignerViewModel, LayoutViewModelWithState } from "../../../../typings/Core.DynamicDataModel/Types";
 import LayoutItemMapper from "./LayoutItemMapper";
 import ValidationMapper from "./ValidationMapper";
 
@@ -54,14 +59,55 @@ export default class LayoutMapper {
 
   private toAddViewModel(layout: LayoutViewModelWithState): AddLayoutViewModel {
     const mapper = this.mappers.find(mapper => mapper.type === layout.Type);
-    return mapper.toAddViewModel(layout);
+    const result = mapper.toAddViewModel(layout);
+    const othersItems = this.extractOthersItems(layout, result.Items);
+    if (othersItems.length === 0) return result;
+    return { ...result, Items: [...result.Items, ...othersItems] };
   }
 
-  private toModifyViewModel(
-    layout: LayoutViewModelWithState
-  ): ModifyLayoutViewModel {
+  private toModifyViewModel(layout: LayoutViewModelWithState): ModifyLayoutViewModel {
     const mapper = this.mappers.find(mapper => mapper.type === layout.Type);
-    return mapper.toModifyViewModel(layout);
+    const result = mapper.toModifyViewModel(layout);
+    const othersItems = this.extractOthersItems(layout, result.Items);
+    if (othersItems.length === 0) return result;
+    return { ...result, Items: [...result.Items, ...othersItems] };
+  }
+
+  private extractOthersItems(layout: LayoutViewModelWithState, existingItems: SaveLayoutItemViewModel[]): SaveLayoutItemViewModel[] {
+    let events: FormEvents[] = [];
+    try {
+      events = (JSON.parse(layout.Design) as { Events?: FormEvents[] })?.Events ?? [];
+    } catch {
+      return [];
+    }
+    if (!events.length) return [];
+
+    const referencedGuids = new Set<string>();
+    events.forEach(event => {
+      event.LayoutItems?.forEach(item => { if (item.Guid) referencedGuids.add(item.Guid.toLowerCase()); });
+      event.Actions?.forEach(action => { if (action.Guid) referencedGuids.add(action.Guid.toLowerCase()); });
+    });
+
+    const coveredGuids = new Set<string>();
+    existingItems.forEach(item => {
+      if (item.Type === LayoutItemType.Column) {
+        const colGuid = (item as SaveLayoutItemColumnViewModel).ColumnGuid;
+        if (colGuid) coveredGuids.add(colGuid.toLowerCase());
+      } else if (item.Type === LayoutItemType.Reference || item.Type === LayoutItemType.SubLayout) {
+        const relGuid = (item as SaveLayoutItemReferenceViewModel | SaveSubLayoutItemViewModel).RelationGuid;
+        if (relGuid) coveredGuids.add(relGuid.toLowerCase());
+      }
+    });
+
+    return Array.from(referencedGuids)
+      .filter(guid => !coveredGuids.has(guid))
+      .map(guid => ({
+        Guid: guid,
+        ParentGuid: null,
+        Type: LayoutItemType.Others,
+        Design: '{}',
+        OrderIndex: 0,
+      }));
   }
 }
 

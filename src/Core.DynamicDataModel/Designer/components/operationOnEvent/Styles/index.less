@@ -12,4 +12,97 @@
 	&_jsblock_code {
 		width: 300px;
 	}
+
+  &_list-header {
+		display: flex !important;
+		align-items: center;
+		height: 40px !important;
+		border-radius: 5px;
+		background-color: var(--legend-color);
+		margin: 0 5px;
+		color:var(--legend-txt-color);
+		padding: 0 10px;
+	}
+
+  &_add {
+		border: 1px dashed gray;
+		height: 40px;
+		border-Radius: 5px;
+		background-Color: var(--background-color-base);
+		margin: 0 5px;
+		cursor: pointer;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
+
+  &_list-column {
+		@{padding-left}: 10px !important;
+	}
+}
+
+.ooe-list {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 8px;
+
+  &__toolbar {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 8px;
+  }
+
+  &__add {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background-color: #8dc63f;
+    color: #fff;
+    cursor: pointer;
+    font-size: 16px;
+
+    &:hover {
+      background-color: #7ab035;
+    }
+  }
+
+  &__cards {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    overflow-y: auto;
+  }
+
+  &__card {
+
+    &:hover {
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+    }
+  }
+
+  &__card-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-left: 12px;
+  }
+
+  &__card-title {
+    flex: 1;
+    text-align: right;
+  }
+
+  &__icon {
+    font-size: 16px;
+    cursor: pointer;
+    transition: opacity 0.2s;
+
+    &:hover { opacity: 0.75; }
+    &--delete { color: #f5222d; }
+    &--edit   { color: #fa8c16; }
+  }
 }

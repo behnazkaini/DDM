@@ -34,7 +34,7 @@ function QueryBuilderActionConditionEditor({ form, onSubmit, onCancel, field, op
 			? LayoutItemType.Column
 			: LayoutItemType.Reference;
 	}
-
+console.log("f")
 	const actionsDataSource: SelectItem[] = useMemo(() => {
 		if (layoutItem) {
 			const layoutType = getLayoutType();

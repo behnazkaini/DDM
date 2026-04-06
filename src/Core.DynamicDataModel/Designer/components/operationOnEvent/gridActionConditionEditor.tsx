@@ -11,7 +11,6 @@ import { LayoutItemType } from '../../../../Models/Chargoon.Didgah.Core.DynamicD
 import TreeSelect from '@didgah-components/ant-tree-select';
 import useDataModelTreeStructure from './dataModelTreeStructure';
 import { ITreeNode } from '@models/didgah-components';
-import { consoleProxy2 } from '../../../../Core.DynamicDataModel/SearchFormGenerator/helper';
 const FormItem = Form.Item;
 
 const functionDataSource = [
