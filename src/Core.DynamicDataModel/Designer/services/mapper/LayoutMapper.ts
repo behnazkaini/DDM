@@ -109,7 +109,7 @@ export default class LayoutMapper {
     return Array.from(referencedGuids)
       .filter(guid => !coveredGuids.has(guid))
       .map(guid => {
-        const base = { Guid: createGuid.newGuid(), ParentGuid: null, Type: LayoutItemType.Others, Design: '{}', OrderIndex: 0 };
+        const base = { Guid: createGuid.newGuid(), ParentGuid: null, Type: LayoutItemType.Hidden, Design: '{}', OrderIndex: 0 };
         if (columnGuids.has(guid)) return { ...base, ColumnGuid: guid };
         if (relationGuids.has(guid)) return { ...base, RelationGuid: guid };
         return base;

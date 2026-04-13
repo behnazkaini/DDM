@@ -77,7 +77,8 @@ function LayoutContent({ variables, mode, currentLayout, widgetsMode, onSaveAndV
     primaryKey,
     validator,
     widgetFactory,
-    layoutManager
+    layoutManager,
+    store,
   });
   const formApi = useFormApi();
   const getComponentData = (layoutItemGuid) => {

@@ -37,7 +37,7 @@ export default class LayoutItemMapper {
   }
 
   public toDesignerViewModels(items: LayoutItemViewModel[]): LayoutItemDesignerViewModel[] {
-    const filterItems = items.filter(i => i.Type !== LayoutItemType.Others)
+    const filterItems = items.filter(i => i.Type !== LayoutItemType.Hidden)
     return filterItems.map(item => {
       const mapper = this.mappers.find(mapper => mapper.type === item.Type);
       return mapper.toDesingerViewModel(item);

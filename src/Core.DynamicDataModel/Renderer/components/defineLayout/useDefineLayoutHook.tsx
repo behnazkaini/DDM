@@ -12,6 +12,7 @@ import { LayoutValueByPrimaryKeyResponseViewModel } from "../../../../Models/Cha
 import { LayoutViewModel } from "../../../../Models/Chargoon.Didgah.Core.DynamicDataModel.BaseAPI.ViewModels.LayoutViewModel";
 import { translate } from '../../../../Utility/language';
 import LayoutManager from "../../../LayoutManager";
+import { FormStore } from '../../store/FormValuesStore';
 
 interface UseDefineHookProps {
 	primaryKey: string;
@@ -21,7 +22,8 @@ interface UseDefineHookProps {
 	validator: ComplexValidator,
 	currentLayout: LayoutViewModel,
 	widgetFactory: WidgetFactory,
-	layoutManager?: LayoutManager
+	layoutManager?: LayoutManager,
+	store: FormStore,
 }
 
 export default function useDefineLayoutHook({
@@ -33,6 +35,7 @@ export default function useDefineLayoutHook({
 	validator,
 	currentLayout,
 	widgetFactory,
+	store,
 }: UseDefineHookProps & FormComponentProps): UseDefineHook {
 
 	const getterSubLayoutsSavedData = React.useRef<Function[]>([]);
@@ -76,6 +79,26 @@ export default function useDefineLayoutHook({
 				}
 			}
 		});
+
+		// Include derived values for Hidden layout items (targets of operationOnEvent
+		// that are not rendered on the form but must be persisted).
+		const storeDerived = store.getState().derived;
+		currentLayout.Items
+			.filter(item => item.Type === LayoutItemType.Hidden)
+			.forEach(hiddenItem => {
+				const rowKey = (hiddenItem as any).ColumnGuid ?? (hiddenItem as any).RelationGuid;
+				if (!rowKey) return;
+				if (rowKey in storeDerived) {
+					KeyValueList.push({ Key: rowKey, Value: storeDerived[rowKey] });
+				} else {
+					// Fall back to the value loaded from the server (edit mode).
+					const initialRow = initialData?.Row?.KeyValues?.find(kv => kv.Key === rowKey);
+					if (initialRow) {
+						KeyValueList.push({ Key: rowKey, Value: initialRow.Value });
+					}
+				}
+			});
+
 		return KeyValueList;
 	};
 
