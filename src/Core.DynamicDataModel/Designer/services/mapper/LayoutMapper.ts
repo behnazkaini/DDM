@@ -23,8 +23,10 @@ import { SaveLayoutItemColumnViewModel } from "../../../../Models/Chargoon.Didga
 import { SaveLayoutItemReferenceViewModel } from "../../../../Models/Chargoon.Didgah.Core.DynamicDataModel.BaseAPI.ViewModels.SaveLayoutItemReferenceViewModel";
 import { SaveSubLayoutItemViewModel } from "../../../../Models/Chargoon.Didgah.Core.DynamicDataModel.BaseAPI.ViewModels.SaveSubLayoutItemViewModel";
 import { ArchiveLayoutDesignerViewModel, DefineArchiveLayoutDesignerViewModel, DefineLayoutDesignerViewModel, FormEvents, InlineArchiveLayoutDesignerViewModel, LayoutViewModelWithState } from "../../../../typings/Core.DynamicDataModel/Types";
+import { DataModelViewModel } from "../../../../Models/Chargoon.Didgah.Core.DynamicDataModel.BaseAPI.ViewModels.DataModelViewModel";
 import LayoutItemMapper from "./LayoutItemMapper";
 import ValidationMapper from "./ValidationMapper";
+import { guid as createGuid } from 'didgah/common';
 
 export default class LayoutMapper {
 
@@ -45,35 +47,36 @@ export default class LayoutMapper {
   }
 
   public toSaveViewModel(
-    layouts: LayoutViewModelWithState[]
+    layouts: LayoutViewModelWithState[],
+    dataModels: DataModelViewModel[]
   ): SaveLayoutChangesViewModel {
     return {
       Added: layouts
         .filter((x) => x.State === "Added")
-        .map((x) => this.toAddViewModel(x)),
+        .map((x) => this.toAddViewModel(x, dataModels)),
       Modified: layouts
         .filter((x) => x.State === "Modified")
-        .map((x) => this.toModifyViewModel(x)),
+        .map((x) => this.toModifyViewModel(x, dataModels)),
     };
   }
 
-  private toAddViewModel(layout: LayoutViewModelWithState): AddLayoutViewModel {
+  private toAddViewModel(layout: LayoutViewModelWithState, dataModels: DataModelViewModel[]): AddLayoutViewModel {
     const mapper = this.mappers.find(mapper => mapper.type === layout.Type);
     const result = mapper.toAddViewModel(layout);
-    const othersItems = this.extractOthersItems(layout, result.Items);
+    const othersItems = this.extractOthersItems(layout, result.Items, dataModels);
     if (othersItems.length === 0) return result;
     return { ...result, Items: [...result.Items, ...othersItems] };
   }
 
-  private toModifyViewModel(layout: LayoutViewModelWithState): ModifyLayoutViewModel {
+  private toModifyViewModel(layout: LayoutViewModelWithState, dataModels: DataModelViewModel[]): ModifyLayoutViewModel {
     const mapper = this.mappers.find(mapper => mapper.type === layout.Type);
     const result = mapper.toModifyViewModel(layout);
-    const othersItems = this.extractOthersItems(layout, result.Items);
+    const othersItems = this.extractOthersItems(layout, result.Items, dataModels);
     if (othersItems.length === 0) return result;
     return { ...result, Items: [...result.Items, ...othersItems] };
   }
 
-  private extractOthersItems(layout: LayoutViewModelWithState, existingItems: SaveLayoutItemViewModel[]): SaveLayoutItemViewModel[] {
+  private extractOthersItems(layout: LayoutViewModelWithState, existingItems: SaveLayoutItemViewModel[], dataModels: DataModelViewModel[]): SaveLayoutItemViewModel[] {
     let events: FormEvents[] = [];
     try {
       events = (JSON.parse(layout.Design) as { Events?: FormEvents[] })?.Events ?? [];
@@ -99,15 +102,18 @@ export default class LayoutMapper {
       }
     });
 
+    const currentDataModel = dataModels.find(m => m.Guid.toLowerCase() === layout.DataModelGuid.toLowerCase());
+    const columnGuids = new Set<string>((currentDataModel?.Columns ?? []).map(c => c.Guid.toLowerCase()));
+    const relationGuids = new Set<string>((currentDataModel?.Relations ?? []).map(r => r.Guid.toLowerCase()));
+
     return Array.from(referencedGuids)
       .filter(guid => !coveredGuids.has(guid))
-      .map(guid => ({
-        Guid: guid,
-        ParentGuid: null,
-        Type: LayoutItemType.Others,
-        Design: '{}',
-        OrderIndex: 0,
-      }));
+      .map(guid => {
+        const base = { Guid: createGuid.newGuid(), ParentGuid: null, Type: LayoutItemType.Others, Design: '{}', OrderIndex: 0 };
+        if (columnGuids.has(guid)) return { ...base, ColumnGuid: guid };
+        if (relationGuids.has(guid)) return { ...base, RelationGuid: guid };
+        return base;
+      });
   }
 }
 

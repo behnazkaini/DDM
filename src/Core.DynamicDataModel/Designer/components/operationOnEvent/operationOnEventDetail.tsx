@@ -272,8 +272,7 @@ function OperationOnEventDetail({ selectedRecord, onSave, onCancel }: Props) {
       cancelText={translate('Cancel')}
       width="100%"
     >
-      {/* Events */}
-      <Fieldset legend={translate('Events')} simpleMode>
+      <Fieldset legend={translate('Events')} simpleMode collapsible={false}>
         <p style={{ fontSize: 12, color: '#888', marginBottom: 8 }}>{translate('EventsHint')}</p>
 
         {eventRows.map(row => {
@@ -356,6 +355,13 @@ function OperationOnEventDetail({ selectedRecord, onSave, onCancel }: Props) {
                           extraData: { isGridEvent: record.Metadata?.isGrid, layoutItem: record },
                         } : prev);
                       }}
+                      autoExpandParent
+                      // searchable
+                      // textRenderer={(node)=>{
+                      // console.log(node);
+                      // return node
+                      // }
+                     // }
                     />
                   </Col>
                   <Col md={8}>
@@ -378,15 +384,14 @@ function OperationOnEventDetail({ selectedRecord, onSave, onCancel }: Props) {
 
         <Row justify="end">
           <Col>
-            <Button icon="plus" onClick={handleAddEvent} disabled={!!draftEvent} style={addBtnStyle}>
+            <Button  icon="plus" onClick={handleAddEvent} disabled={!!draftEvent} style={addBtnStyle}>
               {translate('AddEvent')}
             </Button>
           </Col>
         </Row>
       </Fieldset>
 
-      {/* Actions */}
-      <Fieldset legend={translate('Actions')} simpleMode>
+      <Fieldset legend={translate('Actions')} simpleMode collapsible={false}>
         <p style={{ fontSize: 12, color: '#888', marginBottom: 8 }}>{translate('ActionsHint')}</p>
 
         {actionRows.map(row => {

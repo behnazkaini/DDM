@@ -185,7 +185,8 @@ const WrapperFormDesigner = (props: {
         if (FormValidation.length === 0) {
           const layoutMapper = new LayoutMapper();
           const apiRequest = layoutMapper.toSaveViewModel(
-            currentFloor.LayoutModels.Layouts
+            currentFloor.LayoutModels.Layouts,
+            currentFloor.LayoutModels.DataModels
           );
           dispatch(
             ChangeLoadingState({

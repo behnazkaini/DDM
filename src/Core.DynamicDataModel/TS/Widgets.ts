@@ -39,7 +39,9 @@ export const Setting = {
   ReferenceTokenContainerColumnsConfige: "ReferenceTokenContainerColumnsConfige",
   CascadeDropDownLevel: "CascadeDropDownLevel",
   CascadeDropdownSelectedColumns: "CascadeDropdownSelectedColumns",
-  DefaultStaff:"DefaultStaff"
+  DefaultStaff: "DefaultStaff",
+  ReferenceCheckBoxListColumnsConfig: "ReferenceCheckBoxListColumnsConfig",
+  ReferenceRadioButtonColumnsConfig: "ReferenceRadioButtonColumnsConfig",
 };
 
 export const editWidgetToDefaultDisplay = {

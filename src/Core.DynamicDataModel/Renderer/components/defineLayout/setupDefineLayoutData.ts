@@ -195,6 +195,8 @@ export default class SetupData implements ISetupData {
     return this.currentLayout.Items.filter(item => {
       if (item.Type === LayoutItemType.NoneBindable) {
         return (this.widgetFactory.getLayoutItemSettingByType(item) as LayoutItemNoneBindableSetting).Widget.Id === NoneBindableTypeId.HelpBlock;
+      } else if (item.Type === LayoutItemType.Others) {
+        return false
       }
       else {
         return true

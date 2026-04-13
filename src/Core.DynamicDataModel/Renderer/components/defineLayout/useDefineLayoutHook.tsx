@@ -188,5 +188,5 @@ export default function useDefineLayoutHook({
 		hideValidationError,
 		setChangedLayoutItemGuid,
 		getChangedLayoutItemGuid,
-	};
+	} as any;
 }

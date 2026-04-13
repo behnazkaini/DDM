@@ -4,10 +4,11 @@ import { Provider, ProviderProps } from "react-redux";
 import { store } from "./store";
 import { LayoutDesignerCommandHandlerParameter } from "../../typings/Core.DynamicDataModel/Types";
 
-const ExtendedProvider = Provider  as React.ComponentType<ProviderProps<any> & {
-  children: React.ReactNode}>;
+const ExtendedProvider = Provider as React.ComponentType<ProviderProps<any> & {
+  children: React.ReactNode
+}>;
 const FormDesigner = (props: LayoutDesignerCommandHandlerParameter) => {
-  const { mode, layoutGuid, dataModelGuid, layoutType, parentGuid,copyFormAppFn, plugins  } = props;
+  const { mode, layoutGuid, dataModelGuid, layoutType, parentGuid, copyFormAppFn, plugins } = props;
   return (
     <ExtendedProvider store={store}>
       <App
@@ -18,7 +19,7 @@ const FormDesigner = (props: LayoutDesignerCommandHandlerParameter) => {
         parentGuid={parentGuid}
         plugins={plugins}
         copyFormAppFn={copyFormAppFn}
-        />
+      />
     </ExtendedProvider>
   );
 };

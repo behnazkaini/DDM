@@ -228,24 +228,23 @@ function DefineLayout({
     storeRef.current = createFormStore(graph);
 
     // Pass empty events to SetupData — derivations are now handled by the store.
-    const data = new SetupData({
-      widgetFactory: widgetFactory.current,
-      initialData: result as any,
-      currentLayout: layout,
-      events: [],
-    });
-
-    dispatch({
-      type: "INIT_AND_SET_LOADING_AND_SETUPDATA",
-      payload: {
-        DataModels: result.DataModels,
-        Layouts: result.Layouts,
-        Row: result?.Row,
-        Variables: result?.Variables,
+      const data = new SetupData({
+        widgetFactory: widgetFactory.current,
+        initialData: result as any,
         currentLayout: layout,
-        initialDataSetup: data,
-      } as LayoutValueByPrimaryKeyResponseViewModel,
-    });
+        events: [],
+      });
+      dispatch({
+        type: "INIT_AND_SET_LOADING_AND_SETUPDATA",
+        payload: {
+          DataModels: result.DataModels,
+          Layouts: result.Layouts,
+          Row: result?.Row,
+          Variables: result?.Variables,
+          currentLayout: layout,
+          initialDataSetup: data,
+        } as LayoutValueByPrimaryKeyResponseViewModel,
+      });
   };
 
   function handleSave() {
