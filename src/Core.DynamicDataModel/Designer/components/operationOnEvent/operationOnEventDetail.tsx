@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button, Card, Col, Fieldset, Icon, Input, Modal, Popconfirm, Row, SelectEx, SelectItem } from 'didgah/ant-core-component';
 import { guid, translate } from 'didgah/common';
 import { ColumnActions, Events, ReferenceActions } from '../../../../typings/Core.DynamicDataModel/Enums';
@@ -28,6 +28,7 @@ type ActionRow = {
   field: string;
   operator: number;
   value: string;
+  extraData?: any;
 };
 
 type DraftEvent = {
@@ -44,6 +45,7 @@ type DraftAction = {
   operator: number | null;
   value: string;
   showJSBlock: boolean;
+  extraData?: any;
 };
 
 interface Props {
@@ -70,6 +72,7 @@ function OperationOnEventDetail({ selectedRecord, onSave, onCancel }: Props) {
 
   const layoutItems = useLayoutItems();
   const { loading: treeLoading, treeStore } = useDataModelTreeStructure({ dataModelGuid: null });
+  const { loading: targetTreeLoading, treeStore: targetLayoutTreeStore } = useDataModelTreeStructure({ dataModelGuid: null });
 
   const [eventRows, setEventRows] = useState<EventRow[]>(() => {
     if (!selectedRecord?.events?.Condition?.Condition) return [];
@@ -91,10 +94,37 @@ function OperationOnEventDetail({ selectedRecord, onSave, onCancel }: Props) {
       field: c.Field,
       operator: Number(c.Operator),
       value: c.Value ?? jsBlockInitialXml,
+      extraData: c.ExtraData,
     }));
   });
 
   const [draftAction, setDraftAction] = useState<DraftAction | null>(null);
+
+  // Pre-select the target tree node when editing an existing grid action
+  useEffect(() => {
+    if (!targetTreeLoading && draftAction?.extraData?.targetLayoutItem && targetLayoutTreeStore.current) {
+      targetLayoutTreeStore.current.setSelectedKeyDirectly(draftAction.extraData.targetLayoutItem.Id);
+    }
+  }, [targetTreeLoading, draftAction?.id]);
+
+  const getGridEventFromRows = (rows: EventRow[]) => rows.find(r => r.extraData?.isGridEvent);
+
+  const [isGridEventSelected, setIsGridEventSelected] = useState<boolean>(() =>
+    !!getGridEventFromRows(
+      selectedRecord?.events?.Condition?.Condition?.map((c: any) => ({
+        id: '', field: c.Field, fieldText: c.Text ?? c.Field,
+        operator: Number(c.Operator), extraData: c.ExtraData,
+      })) ?? []
+    )
+  );
+
+  const [layoutItemDataSource, setLayoutItemDataSource] = useState<any[]>(() => {
+    const rows = selectedRecord?.events?.Condition?.Condition?.map((c: any) => ({
+      id: '', field: c.Field, fieldText: c.Text ?? c.Field,
+      operator: Number(c.Operator), extraData: c.ExtraData,
+    })) ?? [];
+    return getGridEventFromRows(rows)?.extraData?.layoutItem?.Children ?? [];
+  });
 
   function getFieldType(fieldGuid: string): LayoutItemType | null {
     return (layoutItems.find(i => i.value === fieldGuid) as any)?.Type ?? null;
@@ -123,6 +153,12 @@ function OperationOnEventDetail({ selectedRecord, onSave, onCancel }: Props) {
     setDraftEvent({ id: row.id, field: row.field, fieldText: row.fieldText, operator: row.operator, extraData: row.extraData });
   }
 
+  function syncGridState(rows: EventRow[]) {
+    const gridEvent = getGridEventFromRows(rows);
+    setIsGridEventSelected(!!gridEvent);
+    setLayoutItemDataSource(gridEvent?.extraData?.layoutItem?.Children ?? []);
+  }
+
   function handleConfirmEvent() {
     if (!draftEvent?.field) return;
     const row: EventRow = {
@@ -132,16 +168,18 @@ function OperationOnEventDetail({ selectedRecord, onSave, onCancel }: Props) {
       operator: draftEvent.operator,
       extraData: draftEvent.extraData,
     };
-    if (draftEvent.id) {
-      setEventRows(prev => prev.map(r => r.id === draftEvent.id ? row : r));
-    } else {
-      setEventRows(prev => [...prev, row]);
-    }
+    const next = draftEvent.id
+      ? eventRows.map(r => r.id === draftEvent.id ? row : r)
+      : [...eventRows, row];
+    setEventRows(next);
+    syncGridState(next);
     setDraftEvent(null);
   }
 
   function handleDeleteEvent(id: string) {
-    setEventRows(prev => prev.filter(r => r.id !== id));
+    const next = eventRows.filter(r => r.id !== id);
+    setEventRows(next);
+    syncGridState(next);
   }
 
   function handleAddAction() {
@@ -149,16 +187,23 @@ function OperationOnEventDetail({ selectedRecord, onSave, onCancel }: Props) {
   }
 
   function handleEditAction(row: ActionRow) {
-    setDraftAction({ id: row.id, field: row.field, operator: row.operator, value: row.value, showJSBlock: false });
+    setDraftAction({ id: row.id, field: row.field, operator: row.operator, value: row.value, showJSBlock: false, extraData: row.extraData });
   }
 
   function handleConfirmAction() {
     if (!draftAction || !draftAction.field || draftAction.operator === null) return;
+    if (isGridEventSelected && (!draftAction.extraData?.functionName || !draftAction.extraData?.layoutItem)) return;
     const row: ActionRow = {
       id: draftAction.id ?? guid.newGuid(),
       field: draftAction.field,
       operator: draftAction.operator,
-      value: draftAction.value,
+      value: isGridEventSelected ? null : draftAction.value,
+      extraData: isGridEventSelected ? {
+        isGridAction: true,
+        functionName: draftAction.extraData.functionName,
+        layoutItem: draftAction.extraData.layoutItem,
+        targetLayoutItem: draftAction.extraData.targetLayoutItem ?? { Id: draftAction.field, Text: draftAction.field },
+      } : undefined,
     };
     if (draftAction.id) {
       setActionRows(prev => prev.map(r => r.id === draftAction.id ? row : r));
@@ -193,13 +238,81 @@ function OperationOnEventDetail({ selectedRecord, onSave, onCancel }: Props) {
             Operator: r.operator,
             Value: r.value,
             Text: '',
+            ExtraData: r.extraData,
           })),
         },
       },
     });
   }
 
-  function renderActionEditRow(draft: DraftAction, key?: string) {
+  const gridColumnDataSource = layoutItemDataSource
+    .filter((item: any) => item.Metadata?.Type === LayoutItemType.Column)
+    .map((item: any) => ({ key: item.Text, value: item.Id }));
+
+  function renderActionEditRow(draft: DraftAction) {
+    if (isGridEventSelected) {
+      const gridActionsDs = Object.keys(ColumnActions)
+        .filter(k => isNaN(k as any))
+        .map(k => ({ key: translate(`DDM_${k}`), value: ColumnActions[k] }));
+
+      return (
+        <Card>
+          <Row gutter={8} align="middle">
+            <Col md={5}>
+              {targetTreeLoading || !targetLayoutTreeStore.current
+                ? <span>{translate('Loading')}</span>
+                : <TreeSelect
+                    store={targetLayoutTreeStore.current}
+                    onSelect={(_key: any, _node: any, record: any) => {
+                      setDraftAction(prev => prev ? {
+                        ...prev,
+                        field: record.Id,
+                        operator: ColumnActions.setFieldsValue,
+                        extraData: { ...prev.extraData, targetLayoutItem: record },
+                      } : prev);
+                    }}
+                  />
+              }
+            </Col>
+            <Col span={4}>
+              <SelectEx
+                dataSource={gridActionsDs}
+                value={draft.operator}
+                onChange={(v: number) => setDraftAction(prev => prev ? { ...prev, operator: v } : prev)}
+                disabled={!draft.field}
+                style={{ width: '100%' }}
+              />
+            </Col>
+            <Col span={4}>
+              <SelectEx
+                dataSource={[{ key: 'SUM', value: 'SUM' }]}
+                value={draft.extraData?.functionName}
+                onChange={(v: string) => setDraftAction(prev => prev ? { ...prev, extraData: { ...prev.extraData, functionName: v } } : prev)}
+                disabled={!draft.field}
+                style={{ width: '100%' }}
+              />
+            </Col>
+            <Col span={6}>
+              <SelectEx
+                dataSource={gridColumnDataSource}
+                value={draft.extraData?.layoutItem?.Id}
+                onChange={(v: string) => {
+                  const node = layoutItemDataSource.find((i: any) => i.Id === v);
+                  setDraftAction(prev => prev ? { ...prev, extraData: { ...prev.extraData, layoutItem: node } } : prev);
+                }}
+                disabled={!draft.field}
+                style={{ width: '100%' }}
+              />
+            </Col>
+            <Col>
+              <Button size="small" icon="check" onClick={handleConfirmAction} style={{ marginLeft: 4 }} />
+              <Button size="small" icon="close" onClick={() => setDraftAction(null)} style={{ marginLeft: 4 }} />
+            </Col>
+          </Row>
+        </Card>
+      );
+    }
+
     return (
       <Card>
         <Row gutter={8} align="middle">
@@ -396,7 +509,34 @@ function OperationOnEventDetail({ selectedRecord, onSave, onCancel }: Props) {
 
         {actionRows.map(row => {
           if (draftAction?.id === row.id) {
-            return renderActionEditRow(draftAction, row.id);
+            return renderActionEditRow(draftAction);
+          }
+          const actions = (
+            <div className='ooe-list__card-actions'>
+              <Icon type='edit' className='ooe-list__icon ooe-list__icon--edit' onClick={() => handleEditAction(row)} />
+              <Popconfirm title={translate('AreYouSure')} onConfirm={() => handleDeleteAction(row.id)} okText={translate('Yes')} cancelText={translate('No')}>
+                <Icon type='delete' className='ooe-list__icon ooe-list__icon--delete' />
+              </Popconfirm>
+            </div>
+          );
+          if (row.extraData?.isGridAction) {
+            return (
+              <Card>
+                <Row gutter={8} align="middle">
+                  <Col flex="auto">
+                    <span>{row.extraData.targetLayoutItem?.Text ?? layoutItems.find(i => i.value === row.field)?.key}</span>
+                    {' — '}
+                    <span>{translate(`DDM_${ColumnActions[row.operator]}`)}</span>
+                    {' '}
+                    <span>{row.extraData.functionName}</span>
+                    {' ('}
+                    <span>{row.extraData.layoutItem?.Text}</span>
+                    {')'}
+                  </Col>
+                  <Col md={8}>{actions}</Col>
+                </Row>
+              </Card>
+            );
           }
           return (
             <Card>
@@ -407,23 +547,7 @@ function OperationOnEventDetail({ selectedRecord, onSave, onCancel }: Props) {
                 <Col md={8}>
                   <SelectEx dataSource={getActionsDs(row.field)} value={row.operator} disabled style={{ width: '100%' }} />
                 </Col>
-                <Col md={8}>
-                  <div className='ooe-list__card-actions'>
-                    <Icon
-                      type='edit'
-                      className='ooe-list__icon ooe-list__icon--edit'
-                      onClick={() => handleEditAction(row)}
-                    />
-                    <Popconfirm
-                      title={translate('AreYouSure')}
-                      onConfirm={() => handleDeleteAction(row.id)}
-                      okText={translate('Yes')}
-                      cancelText={translate('No')}
-                    >
-                      <Icon type='delete' className='ooe-list__icon ooe-list__icon--delete' />
-                    </Popconfirm>
-                  </div>
-                </Col>
+                <Col md={8}>{actions}</Col>
               </Row>
             </Card>
           );
