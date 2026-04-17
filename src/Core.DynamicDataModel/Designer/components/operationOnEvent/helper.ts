@@ -3,6 +3,8 @@ import { LayoutItemType } from "../../../../Models/Chargoon.Didgah.Core.DynamicD
 import { DataModelViewModel } from "../../../../Models/Chargoon.Didgah.Core.DynamicDataModel.BaseAPI.ViewModels.DataModelViewModel";
 import { FormEvents, LayoutViewModelWithState } from "../../../../typings/Core.DynamicDataModel/Types";
 import { LayoutItemViewModel } from "../../../../Models/Chargoon.Didgah.Core.DynamicDataModel.BaseAPI.ViewModels.LayoutItemViewModel";
+import { LayoutItemColumnViewModel } from "../../../../Models/Chargoon.Didgah.Core.DynamicDataModel.BaseAPI.ViewModels.LayoutItemColumnViewModel";
+import { SubLayoutItemViewModel } from "../../../../Models/Chargoon.Didgah.Core.DynamicDataModel.BaseAPI.ViewModels.SubLayoutItemViewModel";
 
 export function mapOperationOnEventToFormEvents(data: any[]): FormEvents[] {
 	return data.map(item => ({
@@ -81,11 +83,25 @@ function mapColumnToTreeNode(column: any, parentId: string): ITreeNode<any> {
 	}
 }
 
+function resolveColumnNode(col: { Guid: string; Label: string }, parentId: string, layoutItems: LayoutItemViewModel[]): ITreeNode<any> {
+	const layoutItem = layoutItems.find(
+		item => item.Type === LayoutItemType.Column &&
+			(item as unknown as LayoutItemColumnViewModel).ColumnGuid === col.Guid
+	);
+	return {
+		...mapColumnToTreeNode(
+			{ ...col, Label: layoutItem ? JSON.parse(layoutItem.Design).Label : col.Label },
+			parentId
+		),
+		...(!layoutItem ? { Tooltip: 'this field dosnt in form' } : {}),
+	};
+}
+
 export function generateLayoutTree(rootLayoutGuid: string, layouts: LayoutViewModelWithState[], dataModel?: DataModelViewModel, dataModels?: DataModelViewModel[]) {
 	let root = layouts.find(layout => layout.Guid === rootLayoutGuid);
 	let rootNode: ITreeNode<any>;
 	const rootChildren = dataModel
-		? dataModel.Columns.map(col => ({ ...mapColumnToTreeNode(col, root.Guid), IsLeaf: true }))
+		? dataModel.Columns.map(col => ({ ...resolveColumnNode(col, root.Guid, root.Items), IsLeaf: true }))
 		: root.Items.filter(item => item.Type === LayoutItemType.Column).map(item => ({ ...mapLayoutToTreeNode(item as any, root.Guid), IsLeaf: true }));
 	rootNode = {
 		...root,
@@ -104,15 +120,30 @@ export function generateLayoutTree(rootLayoutGuid: string, layouts: LayoutViewMo
 		dataModel.Relations.forEach(relation => {
 			const refDataModel = dataModels.find(dm => dm.Guid.toLowerCase() === relation.ReferenceDataModelGuid.toLowerCase());
 			if (refDataModel) {
+				const rootSubLayoutItem = root.Items.find(
+					item => item.Type === LayoutItemType.SubLayout &&
+						(item as unknown as SubLayoutItemViewModel).RelationGuid === relation.Guid
+				) as unknown as SubLayoutItemViewModel | undefined;
+				const subLayout = rootSubLayoutItem
+					? layouts.find(l => l.Guid === rootSubLayoutItem.SubLayoutGuid)
+					: undefined;
+				const relationLabel = rootSubLayoutItem
+					? JSON.parse((rootSubLayoutItem as any).Design).Label
+					: relation.Label;
 				const relationNode: ITreeNode<any> = {
 					Id: relation.Guid,
-					Children: refDataModel.Columns.map(col => ({ ...mapColumnToTreeNode(col, relation.Guid), IsLeaf: true })),
+					Children: refDataModel.Columns.map(col => ({
+						...resolveColumnNode(col, relation.Guid, subLayout ? subLayout.Items : []),
+						IsLeaf: true
+					})),
 					Hierarchy: [relation.Guid, root.Guid],
 					ParentId: rootNode.Id,
-					Text: relation.Label,
+					Text: relationLabel || relation.Label,
 					DisableSelect: false,
 					IsLeaf: false,
-					Metadata: { isGrid: true }
+          Icon: "icon-circle-o",
+					Metadata: { isGrid: true },
+					...(!rootSubLayoutItem ? { Tooltip: 'the design form have not contained this field' } : {}),
 				};
 				rootNode.Children.push(relationNode);
 			}
