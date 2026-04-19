@@ -127,9 +127,9 @@ export function generateLayoutTree(rootLayoutGuid: string, layouts: LayoutViewMo
 				const subLayout = rootSubLayoutItem
 					? layouts.find(l => l.Guid === rootSubLayoutItem.SubLayoutGuid)
 					: undefined;
-				const relationLabel = rootSubLayoutItem
-					? JSON.parse((rootSubLayoutItem as any).Design).Label
-					: relation.Label;
+				const rawDesign = (rootSubLayoutItem as any)?.Design;
+				const parsedDesign = rawDesign ? JSON.parse(rawDesign) : null;
+				const relationLabel = parsedDesign?.Label ?? relation.Label;
 				const relationNode: ITreeNode<any> = {
 					Id: relation.Guid,
 					Children: refDataModel.Columns.map(col => ({
