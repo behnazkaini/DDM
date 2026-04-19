@@ -1,4 +1,4 @@
-import * as React from "react";
+import React, { useReducer, useRef, useEffect } from "react";
 import { translate } from "../../../../Utility/language";
 import { LayoutValueByPrimaryKeyResponseViewModel } from "../../../../Models/Chargoon.Didgah.Core.DynamicDataModel.BaseAPI.ViewModels.LayoutValueByPrimaryKeyResponseViewModel";
 
@@ -12,9 +12,6 @@ import {
 } from "didgah/ant-core-component";
 import {
   RendererLayoutProps,
-  Design,
-  GetterSavedDataProps,
-  SaveDataViewModel,
 } from "../../../../typings/Core.DynamicDataModel/Types";
 import { LayoutViewModel } from "../../../../Models/Chargoon.Didgah.Core.DynamicDataModel.BaseAPI.ViewModels.LayoutViewModel";
 import { WidgetFactory } from "../../../Widget/WidgetFactory";
@@ -23,11 +20,9 @@ import LayoutManager from "../../../LayoutManager";
 import transportLayer from "../../transportLayer";
 import { ISetupData } from "../../../../typings/Core.DynamicDataModel/Types";
 import ComplexValidator from "../validation/complexValidator";
-import { LayoutValueByPrimaryKeyRequestViewModel } from "../../../../Models/Chargoon.Didgah.Core.DynamicDataModel.BaseAPI.ViewModels.LayoutValueByPrimaryKeyRequestViewModel";
 import LayoutContent from "./layoutContent";
 import { SaveRowViewModel } from "../../../../Models/Chargoon.Didgah.Core.DynamicDataModel.BaseAPI.ViewModels.SaveRowViewModel";
 import { RowViewModel } from "../../../../Models/Chargoon.Didgah.Core.DynamicDataModel.BaseAPI.ViewModels.RowViewModel";
-import { guid } from "didgah/common";
 import { KeyValueViewModel } from "../../../../Models/Chargoon.Didgah.Core.DynamicDataModel.BaseAPI.ViewModels.KeyValueViewModel";
 import { FormStore, createFormStore } from "../../store/FormValuesStore";
 import { buildDerivationGraph } from "../../store/derivationParser";
@@ -125,17 +120,17 @@ function DefineLayout({
   }
 
   const ajax = useAjax();
-  const [state, dispatch] = React.useReducer(reducer, initialState);
+  const [state, dispatch] = useReducer(reducer, initialState);
   const { loading, currentLayout, initialData, initialDataSetup } = state;
-  const widgetFactory = React.useRef<WidgetFactory>(null);
-  const layoutManager = React.useRef<LayoutManager>(null);
-  const validator = React.useRef<ComplexValidator>(null);
-  const variables = React.useRef<KeyValueViewModel<string, Object>[]>(null);
-  const designSetting = React.useRef(null);
-  const storeRef = React.useRef<FormStore>(null);
-  const getSavedAndValidationData = React.useRef(null);
+  const widgetFactory = useRef<WidgetFactory>(null);
+  const layoutManager = useRef<LayoutManager>(null);
+  const validator = useRef<ComplexValidator>(null);
+  const variables = useRef<KeyValueViewModel<string, Object>[]>(null);
+  const designSetting = useRef(null);
+  const storeRef = useRef<FormStore>(null);
+  const getSavedAndValidationData = useRef(null);
 
-  React.useEffect(() => {
+  useEffect(() => {
     const getSetupData = () => {
       if (!hasParent) {
         if (mode === "edit") {

@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from 'react';
+import React, { useEffect, useContext } from 'react';
 import { SelectEx, SelectItem, Button, Col, Row, EditorProps, FieldValue, FormComponentProps, Form } from 'didgah/ant-core-component';
 import { Events } from '../../../../typings/Core.DynamicDataModel/Enums';
 import { LayoutItemViewModel } from '../../../../Models/Chargoon.Didgah.Core.DynamicDataModel.BaseAPI.ViewModels.LayoutItemViewModel';
@@ -27,9 +27,7 @@ interface Props extends EditorProps {
 } 
 
 function QueryBuilderEventConditionEditor({ form, onSubmit, onCancel, field, operator, extraData }: Props & FormComponentProps) {
-	console.log(extraData)
-  const globalProps = React.useContext(GlobalPropsContext);
-  console.log(globalProps)
+  const globalProps = useContext(GlobalPropsContext);
 	const { currentLayout, currentFloor } = useFloorStack({
 		layoutGuid: globalProps.layoutGuid,
 	});

@@ -9,7 +9,6 @@ import useFloorStack from '../../hooks/useFloorStack';
 import { ConditionType } from '@models/didgah-components/lib/Chargoon.Didgah.Core5.Components.Models.QueryBuilder.ConditionType';
 import { FormEvents } from '../../../../typings/Core.DynamicDataModel/Types';
 import { Events } from '../../../../typings/Core.DynamicDataModel/Enums';
-import ReactWindowLoadOnDemand from '../../../../Common/ReactWindow/reactWindowLoadOnDemand';
 
 type RecordWithId = { id: string; title: string; events: any; actions: any };
 
@@ -177,14 +176,3 @@ function OperationOnEvent() {
 }
 
 export default OperationOnEvent;
-
-// return <div style={{ width: '100%', overflow: 'hidden', height: '100%' }}>
-//     <ReactWindowLoadOnDemand
-//       hasNextPage={hasNextPage}
-//       isNextPageLoading={isNextPageLoading}
-//       itemCount={workflowInstances.length}
-//       loadNextPage={handleLoadNextPage}
-//       itemComponent={Item}
-//       itemSize={180}
-//     />
-//   </div>

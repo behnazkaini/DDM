@@ -8,30 +8,28 @@ import { generateLayoutTree } from './helper';
 import { GlobalPropsContext } from '../../store/reducers/designLayoutSlice';
 import useFloorStack from '../../hooks/useFloorStack';
 
-export default function useDataModelTreeStructure({dataModelGuid}) {
-	const ajax = useAjax();
-	const { getTables } = transportLayer(ajax);
-	const [loading, setLoading] = useState(true);
-	const treeStore = useRef<TreeStore>(null); 
+export default function useDataModelTreeStructure({ dataModelGuid }) {
+  const ajax = useAjax();
+  const [loading, setLoading] = useState(true);
+  const treeStore = useRef<TreeStore>(null);
 
-	const globalProps = React.useContext(GlobalPropsContext);
-	const { currentLayout, currentFloor, currentDataModel } = useFloorStack({
-		layoutGuid: globalProps.layoutGuid,
-	});
+  const globalProps = React.useContext(GlobalPropsContext);
+  const { currentFloor, currentDataModel } = useFloorStack({
+    layoutGuid: globalProps.layoutGuid,
+  });
 
-    const generateDataModelTreeStructure = async () => {
-		const nodes = generateLayoutTree(currentFloor.LayoutGuid, currentFloor.LayoutModels.Layouts, currentDataModel, currentFloor.LayoutModels.DataModels);
-    console.log("dd66557",nodes);
-		treeStore.current = new TreeStore({ nodes: nodes as any, expandedKeys: [] });
-		setLoading(false);
-	}
+  const generateDataModelTreeStructure = async () => {
+    const nodes = generateLayoutTree(currentFloor.LayoutGuid, currentFloor.LayoutModels.Layouts, currentDataModel, currentFloor.LayoutModels.DataModels);
+    treeStore.current = new TreeStore({ nodes: nodes as any, expandedKeys: [] });
+    setLoading(false);
+  }
 
-    useEffect(() => {
-		generateDataModelTreeStructure();
-    }, []);
+  useEffect(() => {
+    generateDataModelTreeStructure();
+  }, []);
 
-	return {
-        loading,
-        treeStore
-    }
+  return {
+    loading,
+    treeStore
+  }
 }

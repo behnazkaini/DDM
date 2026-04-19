@@ -1355,3 +1355,200 @@ export const datasetConfigs = {
     data4: { data: data4, layoutGuid: 'c8218455-7912-537c-a6a3-7e3760f2debe', label: 'فرم روی rc — c1+c2→c3, c3*2→c4' },
     data5: { data: data5, layoutGuid: 'a2073221-943d-0cc2-56a4-967f63a2b4bb', label: 'فرم اول — required/disabled on event' },
 };
+
+const designerData={
+    "DataModels": [
+        {
+            "Guid": "b9b418d0-783a-d0b0-ed56-afebabb7839c",
+            "SoftwareGuid": "2cc1539a-9c27-49f8-8202-f2e8ad960c8b",
+            "ScopeGuid": "25bb8458-c64c-4b53-973e-a122572ff902",
+            "Name": "Final_NEW_DDM_Table1",
+            "Label": "جدول ۱",
+            "Type": 1,
+            "Columns": [
+                {
+                    "Guid": "8da81802-f78b-27da-4e5e-30f5e525af7a",
+                    "DataType": 3,
+                    "Name": "Column1",
+                    "Label": "ستون ۱",
+                    "Setting": null,
+                    "Bookmark": "",
+                    "BookmarkType": 0
+                },
+                {
+                    "Guid": "55dd4d7b-020a-23fb-1503-773864f1cfc5",
+                    "DataType": 3,
+                    "Name": "Column2",
+                    "Label": "ستون 2",
+                    "Setting": null,
+                    "Bookmark": "",
+                    "BookmarkType": 0
+                },
+                {
+                    "Guid": "4ae1c762-cb38-105b-00c9-5f0a1ebd9e62",
+                    "DataType": 3,
+                    "Name": "Column3",
+                    "Label": "ستون 3",
+                    "Setting": null,
+                    "Bookmark": "",
+                    "BookmarkType": 0
+                }
+            ],
+            "Relations": [],
+            "Variables": [],
+            "InputVariableType": null
+        },
+        {
+            "Guid": "24aefe86-fef2-ebed-0e94-e64c6045d9d0",
+            "SoftwareGuid": "2cc1539a-9c27-49f8-8202-f2e8ad960c8b",
+            "ScopeGuid": "25bb8458-c64c-4b53-973e-a122572ff902",
+            "Name": "Final_NEW_DDM",
+            "Label": "Final_NEW_DDM",
+            "Type": 1,
+            "Columns": [
+                {
+                    "Guid": "c4069ada-5a32-9c6e-ebb0-93a58d649fe1",
+                    "DataType": 3,
+                    "Name": "F1",
+                    "Label": "فیلد یک",
+                    "Setting": null,
+                    "Bookmark": "",
+                    "BookmarkType": 0
+                },
+                {
+                    "Guid": "72fed647-e758-4488-f955-0c3e7427e3b6",
+                    "DataType": 3,
+                    "Name": "F2",
+                    "Label": "فیلد دو",
+                    "Setting": null,
+                    "Bookmark": "",
+                    "BookmarkType": 0
+                },
+                {
+                    "Guid": "926cbb79-2a45-05aa-ba9f-9efeebc43cbc",
+                    "DataType": 3,
+                    "Name": "F3",
+                    "Label": "فیلد3",
+                    "Setting": null,
+                    "Bookmark": "",
+                    "BookmarkType": 0
+                }
+            ],
+            "Relations": [
+                {
+                    "Guid": "8c575056-e208-cfe0-5442-29182a22b164",
+                    "ReferenceDataModelGuid": "b9b418d0-783a-d0b0-ed56-afebabb7839c",
+                    "Name": "Final_NEW_DDM_Final_NEW_DDM_Table1",
+                    "Label": "Final_NEW_DDM_جدول ۱",
+                    "Nature": 2,
+                    "Type": 2,
+                    "Bookmark": "",
+                    "VariableGuid": null,
+                    "Settings": []
+                }
+            ],
+            "Variables": [],
+            "InputVariableType": null
+        }
+    ],
+    "Layouts": [
+        {
+            "ShowFormItemLabelInSepratedRow": false,
+            "Validations": [],
+            "ComplexValidations": [],
+            "Guid": "2c72fc78-de28-129b-3769-c82f6c8fa174",
+            "DataModelGuid": "24aefe86-fef2-ebed-0e94-e64c6045d9d0",
+            "Label": "main",
+            "Type": 1,
+            "PlatformType": 1,
+            "Design": "{\"IsResponsive\":false,\"Arrangement\":[{\"Id\":0.3564813076358465,\"Type\":1,\"LayoutItemGuid\":\"069d828b-6cea-3e31-7a17-8a45fe444e7b\",\"Children\":[{\"Id\":0.28333251100204226,\"Type\":2,\"Columns\":[{\"Id\":0.44639111879876436,\"Type\":3,\"LayoutItemGuid\":\"8e103371-32f0-bb2b-d970-2ca99636b6d1\",\"Col\":12}]},{\"Id\":0.7223285667308591,\"Type\":2,\"Columns\":[{\"Id\":0.2829292399572618,\"Type\":5,\"LayoutItemGuid\":\"32a151da-4bcb-0a1e-dad4-266a57446d04\",\"Col\":12}]}]}],\"Events\":[],\"DesignType\":0}",
+            "IsDefault": false,
+            "Items": [
+                {
+                    "Guid": "069d828b-6cea-3e31-7a17-8a45fe444e7b",
+                    "ParentGuid": null,
+                    "Type": 1,
+                    "Design": "{\"Label\":\"فیلدست جدید\",\"Widget\":{\"Id\":1}}",
+                    "OrderIndex": 1
+                },
+                {
+                    "ColumnGuid": "c4069ada-5a32-9c6e-ebb0-93a58d649fe1",
+                    "Guid": "8e103371-32f0-bb2b-d970-2ca99636b6d1",
+                    "ParentGuid": "069d828b-6cea-3e31-7a17-8a45fe444e7b",
+                    "Type": 2,
+                    "Design": "{\"Widget\":\"EditWidget\",\"EditWidget\":{\"Id\":0},\"DisplayWidget\":{\"Id\":0},\"SearchWidget\":{\"Id\":0},\"Label\":\"فیلد یک\",\"HelpTooltip\":null,\"Direction\":\"unset\",\"LabelMutable\":false}",
+                    "OrderIndex": 1
+                },
+                {
+                    "RelationGuid": "8c575056-e208-cfe0-5442-29182a22b164",
+                    "SubLayoutGuid": "5093a5b2-1a33-aabc-1555-031c6b34eebc",
+                    "Guid": "32a151da-4bcb-0a1e-dad4-266a57446d04",
+                    "ParentGuid": "069d828b-6cea-3e31-7a17-8a45fe444e7b",
+                    "Type": 4,
+                    "Design": "{}",
+                    "OrderIndex": 2
+                }
+            ],
+            "Plugins": []
+        },
+        {
+            "ShowFormItemLabelInSepratedRow": false,
+            "Validations": [],
+            "ComplexValidations": [],
+            "Guid": "b0427223-2821-7c4e-45b5-d24d488e92dc",
+            "DataModelGuid": "b9b418d0-783a-d0b0-ed56-afebabb7839c",
+            "Label": "inner-form",
+            "Type": 1,
+            "PlatformType": 1,
+            "Design": "{\"IsResponsive\":false,\"Arrangement\":[{\"Id\":0.522555646765912,\"Type\":1,\"LayoutItemGuid\":\"1b2a7b5c-9104-d6af-63f7-2e60a288aab8\",\"Children\":[{\"Id\":0.19228404134928612,\"Type\":2,\"Columns\":[{\"Id\":0.6081491399808951,\"Type\":3,\"LayoutItemGuid\":\"7c8c92ff-2256-de76-46b6-9f80d5188efe\",\"Col\":12}]}]}],\"Events\":[],\"DesignType\":0}",
+            "IsDefault": false,
+            "Items": [
+                {
+                    "Guid": "1b2a7b5c-9104-d6af-63f7-2e60a288aab8",
+                    "ParentGuid": null,
+                    "Type": 1,
+                    "Design": "{\"Label\":\"فیلدست جدید\",\"Widget\":{\"Id\":1}}",
+                    "OrderIndex": 1
+                },
+                {
+                    "ColumnGuid": "8da81802-f78b-27da-4e5e-30f5e525af7a",
+                    "Guid": "7c8c92ff-2256-de76-46b6-9f80d5188efe",
+                    "ParentGuid": "1b2a7b5c-9104-d6af-63f7-2e60a288aab8",
+                    "Type": 2,
+                    "Design": "{\"Widget\":\"EditWidget\",\"EditWidget\":{\"Id\":0},\"DisplayWidget\":{\"Id\":0},\"SearchWidget\":{\"Id\":0},\"Label\":\"ستون ۱\",\"HelpTooltip\":null,\"Direction\":\"unset\",\"LabelMutable\":false}",
+                    "OrderIndex": 1
+                }
+            ],
+            "Plugins": []
+        },
+        {
+            "DefineLayoutGuid": "b0427223-2821-7c4e-45b5-d24d488e92dc",
+            "Guid": "5093a5b2-1a33-aabc-1555-031c6b34eebc",
+            "DataModelGuid": "b9b418d0-783a-d0b0-ed56-afebabb7839c",
+            "Label": "table",
+            "Type": 3,
+            "PlatformType": 1,
+            "Design": "{\"Widget\":{\"Id\":0,\"SearchSetting\":{\"Enable\":false,\"LayoutItemGuid\":null,\"ColumnViewModelGuid\":null}}}",
+            "IsDefault": false,
+            "Items": [
+                {
+                    "ColumnGuid": "8da81802-f78b-27da-4e5e-30f5e525af7a",
+                    "Guid": "01752a44-fe12-9c5f-40c3-02465badd8b9",
+                    "ParentGuid": null,
+                    "Type": 2,
+                    "Design": "{\"Widget\":\"DisplayWidget\",\"DisplayWidget\":{\"Id\":0},\"Label\":\"ستون ۱\",\"HelpTooltip\":null,\"Direction\":\"unset\"}",
+                    "OrderIndex": 1
+                },
+                {
+                    "ColumnGuid": "55dd4d7b-020a-23fb-1503-773864f1cfc5",
+                    "Guid": "4bf5aa38-0f73-a8a2-8252-3f2f5bbd0338",
+                    "ParentGuid": null,
+                    "Type": 2,
+                    "Design": "{\"Widget\":\"DisplayWidget\",\"DisplayWidget\":{\"Id\":0},\"Label\":\"ستون 2\",\"HelpTooltip\":null,\"Direction\":\"unset\"}",
+                    "OrderIndex": 2
+                }
+            ],
+            "Plugins": []
+        }
+    ]
+}

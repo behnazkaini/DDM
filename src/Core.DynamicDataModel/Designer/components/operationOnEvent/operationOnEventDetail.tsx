@@ -473,7 +473,8 @@ function OperationOnEventDetail({ selectedRecord, onSave, onCancel }: Props) {
                           extraData: { isGridEvent: record.Metadata?.isGrid, layoutItem: record },
                         } : prev);
                       }}
-                      autoExpandParent
+                      //autoExpandParent
+                      
                       // searchable
                       // textRenderer={(node)=>{
                       // console.log(node);

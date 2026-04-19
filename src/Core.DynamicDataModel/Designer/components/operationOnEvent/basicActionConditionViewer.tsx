@@ -34,8 +34,8 @@ function QueryBuilderActionConditionViewer(props: FieldValue) {
     }))
   ]);
   const layoutType = currentDataModel.Columns.some(col => col.Guid === field)
-        ? LayoutItemType.Column
-        : LayoutItemType.Reference;
+    ? LayoutItemType.Column
+    : LayoutItemType.Reference;
   const [showCodeViewer, setShowCodeViewer] = useState(false);
   const [code, setCode] = useState('');
   const workspace = useRef(null);
