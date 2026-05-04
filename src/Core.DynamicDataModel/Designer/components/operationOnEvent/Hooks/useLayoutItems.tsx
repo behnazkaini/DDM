@@ -31,8 +31,13 @@ function useLayoutItems() {
         item => item.Type === LayoutItemType.SubLayout &&
           (item as SubLayoutItemViewModel).RelationGuid === rel.Guid
       );
+      const getKey=()=>{
+        if(layoutItem && layoutItem.Design) return JSON.parse(layoutItem.Design).Label as string
+        else if(rel?.Label) return rel.Label
+        else return ''
+      }
       return {
-				key: layoutItem ? JSON.parse(layoutItem.Design).Label as string : rel.Label,
+        key: getKey(),
         value: rel.Guid,
         Type: LayoutItemType.Reference,
       };

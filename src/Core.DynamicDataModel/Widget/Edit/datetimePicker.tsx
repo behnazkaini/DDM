@@ -1,12 +1,11 @@
-﻿import * as React from "react";
+﻿import React, { useEffect } from "react";
 import { DateTimePicker, injectContext } from "didgah/ant-core-component";
-import { ComponentProps, IWidget } from "../../../typings/Core.DynamicDataModel/Types";
+import { IWidget } from "../../../typings/Core.DynamicDataModel/Types";
 import { calendar } from "didgah/common";
-import { WidgetType } from "../../../typings/Core.DynamicDataModel/Enums";
 import { checkIsWidgetDisabled } from "./helper";
 
 export const DateTimePickerWidget = (props: any) => {
-  const { value, onChange, DefaultValue, mode, Disabled, Widget } = props;
+  const { value, onChange, DefaultValue, mode, Disabled, Widget, resetForm } = props;
   const pattNumber = /^(\d{1,5})$|^([-+]\d{1,5})$/g;
 
   const handleChange = (selectedDateTime) => {
@@ -16,11 +15,11 @@ export const DateTimePickerWidget = (props: any) => {
       } else {
         onChange(selectedDateTime);
       }
-      props.resetForm()
+      typeof resetForm === 'function' && resetForm()
     }
   }
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (typeof value === 'undefined' && DefaultValue) {
       handleChange(DefaultValue);
     }

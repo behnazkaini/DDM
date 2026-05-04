@@ -1,12 +1,12 @@
-import { injectContext, TokenContainer, TokenItem } from "didgah/ant-core-component";
-import * as React from "react";
+import { injectContext, TokenContainer } from "didgah/ant-core-component";
+import React, { useEffect } from "react";
 import { IWidget, ComponentProps, AggregationOneToManyValue } from "../../../typings/Core.DynamicDataModel/Types";
 
 const ReferenceTokenContainerViewer = (props: ComponentProps<AggregationOneToManyValue>) => {
-	const { initValue, value, mode } = props;
+	const { value, mode } = props;
 	const [tokenItems, setTokenItems] = React.useState([]);
 
-	React.useEffect(() => {
+	useEffect(() => {
 		if (mode === 'render') {
 			setTokenItems(setupTokenItems());
 		}
@@ -14,7 +14,7 @@ const ReferenceTokenContainerViewer = (props: ComponentProps<AggregationOneToMan
 
 	function setupTokenItems() {
 		const tokens = value?.tokens ?? [];
-		
+
 		const currentTokens = []
 		if (!!tokens && !!tokens.length) {
 			tokens.forEach((value) => {
@@ -27,7 +27,9 @@ const ReferenceTokenContainerViewer = (props: ComponentProps<AggregationOneToMan
 	return (
 		<TokenContainer
 			tokenItems={tokenItems}
-			readOnly={true}
+			editable={false}
+			closeable={false}
+			addableSearch={false}
 		/>
 	);
 };

@@ -34,7 +34,9 @@ import {
   DefaultValidationByWidgetIdHelperProps,
   getDefaultValidationByWidgetIdProps,
   getInitialDefaultValidationArgs,
-  RichLayoutItem
+  RichLayoutItem,
+  ReferenceCheckBoxList,
+  ReferenceRadioButton
 } from "../../typings/Core.DynamicDataModel/Types";
 import {
   FieldTypesWidget,
@@ -694,16 +696,14 @@ class ReferenceWidgetFactoryHelper extends WidgetFactoryHelper<LayoutItemReferen
       ];
     }
     const viewModelSoftwareModel = getSoftwareModelItem(ReferenceDataModelGuid, WebSoftwareComponentViewModels);
+    const widgetId = widgetMode === WidgetType.DisabledWidget ? (itemSetting as LayoutItemReferenceSetting)[WidgetType.EditWidget].Id : (itemSetting as LayoutItemReferenceSetting)[widgetMode].Id;
     if (!!viewModelSoftwareModel) {
       const model: IWebSoftwareViewModel = window["Model" + viewModelSoftwareModel.DataModelGuid.replace(/\-/gm, "").toLowerCase()];
-      const widgetId = widgetMode === WidgetType.DisabledWidget ? (itemSetting as LayoutItemReferenceSetting)[WidgetType.EditWidget].Id : (itemSetting as LayoutItemReferenceSetting)[widgetMode].Id;
       const data = model.widgetMap[ReferenceDataModelGuid.toLowerCase()];
 
       return ReferenceTypeWidgetProxy(RelationNature, RelationType, data)[widgetMode === WidgetType.DisabledWidget ? WidgetType.EditWidget : widgetMode][widgetId]
     } else {
-      return ReferenceTypeWidgetProxy(RelationNature, RelationType, ReferenceTypeWidget)[widgetMode][
-        (itemSetting as LayoutItemReferenceSetting)[widgetMode].Id
-      ];
+      return ReferenceTypeWidgetProxy(RelationNature, RelationType, ReferenceTypeWidget)[widgetMode === WidgetType.DisabledWidget ? WidgetType.EditWidget : widgetMode][widgetId];
     }
   }
 
@@ -927,6 +927,26 @@ class ReferenceWidgetFactoryHelper extends WidgetFactoryHelper<LayoutItemReferen
           };
           break;
 
+        case Setting.ReferenceRadioButtonColumnsConfig:
+          const RadioButtonColumnsObject = {};
+
+          result.ColumnGuids.forEach(
+            (column, index) =>
+              (RadioButtonColumnsObject[column] = { order: index })
+          );
+
+          const RadioButtonColumnsConfige: ReferenceRadioButton = {
+            ReferenceRadioButtonColumnsConfig: {
+              SeperableCharachter: ",",
+              Columns: RadioButtonColumnsObject,
+            },
+          };
+
+          result.Design[settingName] = {
+            ...RadioButtonColumnsConfige[settingName],
+          };
+          break;
+
         case Setting.ReferenceTokenContainerColumnsConfige:
           const TokenContainercolumnsObject = {};
 
@@ -944,6 +964,27 @@ class ReferenceWidgetFactoryHelper extends WidgetFactoryHelper<LayoutItemReferen
 
           result.Design[settingName] = { ...ToeknColumnsConfige[settingName] };
           break;
+
+        case Setting.ReferenceCheckBoxListColumnsConfig:
+          const CheckBoxListcolumnsObject = {};
+
+          result.ColumnGuids.forEach(
+            (column, index) =>
+              (CheckBoxListcolumnsObject[column] = { order: index })
+          );
+
+          const CheckBoxListItemColumnsConfig: ReferenceCheckBoxList = {
+            ReferenceCheckBoxListColumnsConfig: {
+              SeperableCharachter: ',',
+              Columns: CheckBoxListcolumnsObject,
+              CheckBoxCoulmnCountInARow: 4
+            },
+          };
+
+          result.Design[settingName] = { ...CheckBoxListItemColumnsConfig[settingName] };
+          break;
+
+          
 
         case Setting.HelpBlockType:
           result.Design[settingName] = HelpBlockType.info;

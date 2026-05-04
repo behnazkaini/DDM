@@ -1338,24 +1338,6 @@ export const data5={
     "Variables": null
 }
 
-
-export function toMockApiData(dataset: any): any {
-    return {
-        DataModels: dataset.DataModels ,
-        Layouts: dataset.Layouts,
-        Row: dataset.Row,
-        Variables: dataset.Variables,
-    };
-}
-
-export const datasetConfigs = {
-    data1: { data: data1, layoutGuid: 'bf8be894-a773-dd67-a78b-19d0441b4909', label: 'فرم05 — with Result col in grid' },
-    data2: { data: data2, layoutGuid: '3b90c3d8-e2dc-efa6-0b5c-d274c3d1f775', label: 'فرم4 — without Result col in grid' },
-    data3: { data: data3, layoutGuid: 'e1524d4c-d92b-2763-71a4-20cd059513c7', label: 'فرم1 — Score/Point dataset' },
-    data4: { data: data4, layoutGuid: 'c8218455-7912-537c-a6a3-7e3760f2debe', label: 'فرم روی rc — c1+c2→c3, c3*2→c4' },
-    data5: { data: data5, layoutGuid: 'a2073221-943d-0cc2-56a4-967f63a2b4bb', label: 'فرم اول — required/disabled on event' },
-};
-
 const designerData={
     "DataModels": [
         {
@@ -1552,3 +1534,20 @@ const designerData={
         }
     ]
 }
+
+export function toMockApiData(dataset: any): any {
+    return {
+        DataModels: dataset.DataModels ,
+        Layouts: dataset.Layouts,
+        Row: dataset.Row,
+        Variables: dataset.Variables,
+    };
+}
+
+export const datasetConfigs = {
+    data1: { data: data1, layoutGuid: 'bf8be894-a773-dd67-a78b-19d0441b4909', label: 'فرم05 — with Result col in grid' },
+    data2: { data: data2, layoutGuid: '3b90c3d8-e2dc-efa6-0b5c-d274c3d1f775', label: 'فرم4 — without Result col in grid' },
+    data3: { data: data3, layoutGuid: 'e1524d4c-d92b-2763-71a4-20cd059513c7', label: 'فرم1 — Score/Point dataset' },
+    data4: { data: data4, layoutGuid: 'c8218455-7912-537c-a6a3-7e3760f2debe', label: 'فرم روی rc — c1+c2→c3, c3*2→c4' },
+    data5: { data: data5, layoutGuid: 'a2073221-943d-0cc2-56a4-967f63a2b4bb', label: 'فرم اول — required/disabled on event' },
+};

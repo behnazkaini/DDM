@@ -362,13 +362,19 @@ function OperationOnEventDetail({ selectedRecord, onSave, onCancel }: Props) {
         <Label >{`${translate("Title")} :`}</Label>
       </Col>
       <Col md={4}>
+        <Input
+          value={title}
+          onChange={e => { setTitle(e.target.value); if (titleError) setTitleError(false); }}
+          style={titleError ? { borderColor: '#ff4d4f', boxShadow: '0 0 0 2px rgba(255,77,79,.2)' } : undefined} />
+      </Col>
+      {/* <Col md={4}>
         {editingTitle
           ? <Input
             value={title}
             onChange={e => { setTitle(e.target.value); if (titleError) setTitleError(false); }}
             style={titleError ? { borderColor: '#ff4d4f', boxShadow: '0 0 0 2px rgba(255,77,79,.2)' } : undefined}
           />
-          : <Input value={title} disabled />
+          : <Input value={title} readOnly />
         }
       </Col>
       <Col md={8} style={{ marginTop: '6px', marginRight: '3px' }}>
@@ -376,7 +382,7 @@ function OperationOnEventDetail({ selectedRecord, onSave, onCancel }: Props) {
           ? <Icon type="check" onClick={() => setEditingTitle(false)} style={{ cursor: 'pointer', color: '#52c41a', fontSize: '16px' }} />
           : <Icon type="edit" onClick={() => setEditingTitle(true)} style={{ cursor: 'pointer', color: '#fa8c16', fontSize: '16px' }} />
         }
-      </Col>
+      </Col> */}
     </Row>
   );
 
@@ -391,7 +397,8 @@ function OperationOnEventDetail({ selectedRecord, onSave, onCancel }: Props) {
       width="99%"
     >
       <Fieldset legend={translate('Events')} simpleMode collapsible={false}>
-        <Label>{translate('TheOccurrenceOfAnyOfTheFollowingConditionsWillTriggerTheOperation')}</Label>
+        {/* <Label>{translate('TheOccurrenceOfAnyOfTheFollowingConditionsWillTriggerTheOperation')}</Label> */}
+        <Label>'رخ دادن یک مورد از شروط زیر منجر به انجام عملیات میشود.'</Label>
 
         {eventRows.map(row => {
           const isEditing = draftEvent?.id === row.id;
@@ -474,7 +481,7 @@ function OperationOnEventDetail({ selectedRecord, onSave, onCancel }: Props) {
                         } : prev);
                       }}
                       //autoExpandParent
-                      
+
                       // searchable
                       // textRenderer={(node)=>{
                       // console.log(node);
@@ -512,7 +519,8 @@ function OperationOnEventDetail({ selectedRecord, onSave, onCancel }: Props) {
       </Fieldset>
 
       <Fieldset legend={translate('Actions')} simpleMode collapsible={false}>
-        <Label>{translate('AllDefinedOperationsAreExecuted')}</Label>
+        {/* <Label>{translate('AllDefinedOperationsAreExecuted')}</Label> */}
+        <Label>'تمامی عملیاتهای تعیین شده انجام میشوند.'</Label>
 
         {actionRows.map(row => {
           if (draftAction?.id === row.id) {
@@ -546,7 +554,7 @@ function OperationOnEventDetail({ selectedRecord, onSave, onCancel }: Props) {
             );
           }
           return (
-            <Card>
+            <Card style={{ borderColor:'#52c41a' }}>
               <Row>
                 <Col md={8}>
                   <SelectEx dataSource={layoutItems} value={row.field} disabled style={{ width: '99%' }} />

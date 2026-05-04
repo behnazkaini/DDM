@@ -1,22 +1,28 @@
-﻿import * as React from "react";
-import { injectContext, Label } from "didgah/ant-core-component";
-import { calendar } from "didgah/common";
+﻿import React, { useEffect } from "react";
+import { DatePickerEx, injectContext } from "didgah/ant-core-component";
 import { ComponentProps, IWidget } from "../../../typings/Core.DynamicDataModel/Types";
+
+enum DefaultValueEnum {
+  CurrentDate = '0'
+}
 
 const DateViewer = (props: ComponentProps) => {
   const { value, DefaultValue } = props;
-  const dateValue = value != null ? value : DefaultValue;
-  
-  if (DefaultValue && value == null) {
-    props.onChange(calendar.calculateDateByDayNumber(dateValue) as any);
+
+  const getValue = () => {
+    let dateValue = value;
+    if (!dateValue && (DefaultValue === DefaultValueEnum.CurrentDate)) dateValue = new Date()
+    return dateValue
   }
 
   return (
-    <Label>
-      {calendar.getShortDateString(
-        calendar.calculateDateByDayNumber(dateValue) as any
-      )}
-    </Label>
+    <div style={{ pointerEvents: 'none' }}>
+      <DatePickerEx
+        defaultValue={getValue()}
+        valueType="string"
+        allowClear={false}
+      />
+    </div>
   );
 };
 

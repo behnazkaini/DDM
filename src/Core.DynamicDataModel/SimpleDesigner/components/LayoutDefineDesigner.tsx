@@ -1,0 +1,52 @@
+import * as React from "react";
+import { translate } from "didgah/common";
+import { Form, Input, Spin, Tabs } from "didgah/ant-core-component";
+import { LayoutTabs } from "../../../typings/Core.DynamicDataModel/Enums";
+import LayoutDesigner from "./LayoutDesigner";
+import LayoutPreviewer from "./LayoutPreviewer";
+import { SimpleDesignerGlobalPropsContext } from "../store/reducers/designLayoutSlice";
+import useFloorStack from "../hooks/useFloorStack";
+import FormPropertiesDock from "./FormPropertiesDock";
+
+
+const TabPane = Tabs.TabPane;
+
+interface LayoutDefineDesignerProps {
+}
+
+const LayoutDefineDesigner = (props: LayoutDefineDesignerProps) => {
+  const globalProps = React.useContext(SimpleDesignerGlobalPropsContext);
+  const { currentFloor, currentLayout } = useFloorStack({
+    layoutGuid: globalProps.layoutGuid,
+  });
+  const { IsLoading } = currentFloor;
+  const [currentTab, setCurrentTab] = React.useState<string>(
+    LayoutTabs.Designer
+  );
+  const clickTabHandler = (tabName) => {
+    setCurrentTab(tabName);
+  };
+
+
+  return (
+    <Spin spinning={IsLoading} stretch>
+      <Tabs
+        activeKey={currentTab}
+        defaultActiveKey={LayoutTabs.Designer}
+        className={"coreDDM_tabBar"}
+        onChange={clickTabHandler}
+        animated={true}
+        onTabClick={() => null}
+      >
+        <TabPane key={LayoutTabs.Designer.toString()} tab={translate("Design")}>
+          {!IsLoading && <LayoutDesigner key={`LayoutDesigner_${currentLayout.Guid}`} />}
+        </TabPane>
+        <TabPane key={LayoutTabs.Preview.toString()} tab={translate("Preview")}>
+          <div style={{ width: "100%" }}>{<LayoutPreviewer mode={"add"} designVersion={currentFloor.StateVersion} inLoadableMode={true} layoutGuid={currentLayout.Guid} dataModelGuid={currentLayout.DataModelGuid} previewInitialDataForDesigner={{ DataModels: currentFloor.LayoutModels.DataModels, Layouts: currentFloor.LayoutModels.Layouts, Rows: [] }} layoutType={currentLayout.Type} webSoftwareComponents={currentFloor.SoftwareModels} />}</div>
+        </TabPane>
+      </Tabs>
+    </Spin>
+  );
+};
+
+export default LayoutDefineDesigner;

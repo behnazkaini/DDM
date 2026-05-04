@@ -2,15 +2,7 @@ import { ValidationType } from "../../Models/Chargoon.Didgah.Core.DynamicDataMod
 import { LayoutType } from "../../Models/Chargoon.Didgah.Core.DynamicDataModel.Domain.Enumerations.LayoutType";
 import { RelationNature } from "../../Models/Chargoon.Didgah.Core.DynamicDataModel.Domain.Enumerations.RelationNature";
 import { RelationType } from "../../Models/Chargoon.Didgah.Core.DynamicDataModel.Domain.Enumerations.RelationType";
-import {
-  DesignerItemType,
-  DisplayWidget,
-  EditWidget,
-  FieldTypes,
-  NoneBindableTypeId,
-  NoneBindableWidgetType,
-  ReferenceTypes,
-} from "../../typings/Core.DynamicDataModel/Enums";
+import { DesignerItemType, DisplayWidget, EditWidget, FieldTypes, NoneBindableTypeId, NoneBindableWidgetType, ReferenceTypes } from "../../typings/Core.DynamicDataModel/Enums";
 import { FieldTypeWidgets, IDictionary, ReferenceTypeWidgets, SettingType } from "../../typings/Core.DynamicDataModel/Types";
 import { DataModelViewModel } from "../../Models/Chargoon.Didgah.Core.DynamicDataModel.BaseAPI.ViewModels.DataModelViewModel";
 import { DataModelType } from "../../Models/Chargoon.Didgah.Core.DynamicDataModel.Domain.Enumerations.DataModelType";
@@ -48,21 +40,21 @@ export const editWidgetToDefaultDisplay = {
   [EditWidget.TextBox]: DisplayWidget.Label,
   [EditWidget.TextArea]: DisplayWidget.Label,
   [EditWidget.CommaSeparableComboBox]: DisplayWidget.Label,
+  [EditWidget.RadioButton]: DisplayWidget.RadioButtonViewer,
   [EditWidget.Email]: DisplayWidget.Label,
   [EditWidget.URL]: DisplayWidget.Label,
   [EditWidget.InputDecimal]: DisplayWidget.Label,
   [EditWidget.InputDecimalWithSeperator]: DisplayWidget.Label,
   [EditWidget.InputNumber]: DisplayWidget.Label,
   [EditWidget.InputNumberWithSeperator]: DisplayWidget.Label,
-  [EditWidget.InputHotkey]:  DisplayWidget.Label,
+  [EditWidget.InputHotkey]: DisplayWidget.Label,
   [EditWidget.CommaSeparableNumberComboBox]: DisplayWidget.Label,
   [EditWidget.Checkbox]: DisplayWidget.ReadonlyCheckbox,
   [EditWidget.Switch]: DisplayWidget.SwitchViewer,
-  [EditWidget.DateTimePicker]:  DisplayWidget.DateTimeViewer,
+  [EditWidget.DateTimePicker]: DisplayWidget.DateTimeViewer,
   [EditWidget.DatePicker]: DisplayWidget.DateViewer,
-  [EditWidget.TimePicker]: DisplayWidget.TimeViewer
-
-}
+  [EditWidget.TimePicker]: DisplayWidget.TimeViewer,
+};
 
 export const FieldTypesWidget: FieldTypeWidgets = {
   "1": {
@@ -73,10 +65,12 @@ export const FieldTypesWidget: FieldTypeWidgets = {
       "2": EditWidget.CommaSeparableComboBox,
       "3": EditWidget.Email,
       "4": EditWidget.URL,
-      "5": EditWidget.InputHotkey,
+      "5": EditWidget.RadioButton,
+      "6": EditWidget.InputHotkey,
     },
     DisplayWidget: {
       "0": DisplayWidget.Label,
+      "1": DisplayWidget.RadioButtonViewer
     },
     DisabledWidget: {
       "0": EditWidget.TextBox,
@@ -84,10 +78,11 @@ export const FieldTypesWidget: FieldTypeWidgets = {
       "2": EditWidget.CommaSeparableComboBox,
       "3": EditWidget.Email,
       "4": EditWidget.URL,
+      "5": EditWidget.RadioButton,
     },
     SearchWidget: {
       "0": EditWidget.TextBox,
-    }
+    },
   },
   "2": {
     Name: FieldTypes.Decimal,
@@ -105,7 +100,7 @@ export const FieldTypesWidget: FieldTypeWidgets = {
     },
     SearchWidget: {
       "0": EditWidget.InputDecimal,
-    }
+    },
   },
   "3": {
     Name: FieldTypes.Integer,
@@ -125,7 +120,7 @@ export const FieldTypesWidget: FieldTypeWidgets = {
     },
     SearchWidget: {
       "0": EditWidget.InputDecimal,
-    }
+    },
   },
   "4": {
     Name: FieldTypes.Boolean,
@@ -183,21 +178,21 @@ export const FieldTypesWidget: FieldTypeWidgets = {
     SearchWidget: {
       "0": EditWidget.InputNumber,
     },
-  }
+  },
 };
 
 export const getRelationCandidatesType = (dataModel: DataModelViewModel) => {
-  if(dataModel.Type === DataModelType.Permanent) {
+  if (dataModel.Type === DataModelType.Permanent) {
     return DesignerItemType.PermanentAggregation;
-  } else if(dataModel.Type === DataModelType.Software) {
+  } else if (dataModel.Type === DataModelType.Software) {
     return DesignerItemType.SoftwareModelAggregation;
   }
-}
+};
 
 type FieldTypeByWidget = {
   Widget: string;
   FieldTypes: string[];
-}[]
+}[];
 
 export const FieldTypesWidgetToList = () => {
   const result = [];
@@ -205,14 +200,13 @@ export const FieldTypesWidgetToList = () => {
     result.push(FieldTypesWidget[item]);
   }
   return result;
-}
+};
 
-
-export const findWidgetIdBySimpleDesignerWidgetType = (simpleDesignerWidgetType, widgetMode: 'EditWidget' | 'DisplayWidget') => {
+export const findWidgetIdBySimpleDesignerWidgetType = (simpleDesignerWidgetType, widgetMode: "EditWidget" | "DisplayWidget") => {
   let id;
   const FieldTypesWidgetList = FieldTypesWidgetToList();
-  const fieldTypesWidget = FieldTypesWidgetList.find(item => {
-    let find = false; 
+  const fieldTypesWidget = FieldTypesWidgetList.find((item) => {
+    let find = false;
     for (let _editWidget in item[widgetMode]) {
       if (item[widgetMode][_editWidget] === simpleDesignerWidgetType) {
         find = true;
@@ -227,19 +221,18 @@ export const findWidgetIdBySimpleDesignerWidgetType = (simpleDesignerWidgetType,
     }
   }
   return id;
-}
- 
-export const findDefaultWidgetTypeForDataType = (dataType, widgetMode: 'EditWidget' | 'DisplayWidget') => {
+};
+
+export const findDefaultWidgetTypeForDataType = (dataType, widgetMode: "EditWidget" | "DisplayWidget") => {
   let widgetType;
   const FieldTypesWidgetList = FieldTypesWidgetToList();
   for (let item of FieldTypesWidgetList) {
     if (ColumnDataType[item.Name] === dataType) {
       widgetType = item.EditWidget[0];
-    } 
+    }
   }
   return widgetType;
-}
-
+};
 
 export const groupFieldTypesByWidget = () => {
   const findEditWidgetInFieldTypesWidget = (input) => {
@@ -252,7 +245,7 @@ export const groupFieldTypesByWidget = () => {
       }
     }
     return fieldTypes;
-  }
+  };
 
   const result: FieldTypeByWidget = [];
   for (let item in EditWidget) {
@@ -260,14 +253,14 @@ export const groupFieldTypesByWidget = () => {
     if (fieldTypes.length === 0) {
       continue;
     }
-    result.findIndex(i => i.Widget === EditWidget[item])
+    result.findIndex((i) => i.Widget === EditWidget[item]);
     result.push({
       Widget: EditWidget[item],
-      FieldTypes: fieldTypes
-    })
+      FieldTypes: fieldTypes,
+    });
   }
   return result;
-}
+};
 
 export const NoneBindableWidget: { [key: number]: NoneBindableWidgetType } = {
   [NoneBindableTypeId.Tabs]: NoneBindableWidgetType.Tabs,
@@ -286,7 +279,7 @@ export const ReferenceTypeWidgetProxy = (natureType: RelationNature, layoutType:
   } else if (natureType === RelationNature.Composition && layoutType === RelationType.OneToMany) {
     return ReferenceMap["3"];
   }
-}
+};
 
 export const ReferenceTypeWidget: ReferenceTypeWidgets = {
   "1": {
@@ -300,23 +293,26 @@ export const ReferenceTypeWidget: ReferenceTypeWidgets = {
     DisabledWidget: {
       "0": EditWidget.ReferenceDefine,
     },
-    SearchWidget: null
+    SearchWidget: null,
   },
   "2": {
     Name: ReferenceTypes.OneToOneAggregation,
     EditWidget: {
       "0": EditWidget.ReferenceAutoComplete,
       "1": EditWidget.CascadeDropdown,
+      "2": EditWidget.ReferenceRadioButton,
     },
     DisplayWidget: {
       "0": DisplayWidget.ReferenceAutoCompleteViewer,
       "1": DisplayWidget.CascadeDropdown,
+      "2": DisplayWidget.ReferenceRadioButtonViewer,
     },
     DisabledWidget: {
       "0": EditWidget.ReferenceAutoComplete,
       "1": EditWidget.CascadeDropdown,
+      "2": EditWidget.ReferenceRadioButton,
     },
-    SearchWidget: null
+    SearchWidget: null,
   },
   "3": {
     Name: ReferenceTypes.OneToManyComposition,
@@ -335,86 +331,80 @@ export const ReferenceTypeWidget: ReferenceTypeWidgets = {
       "1": EditWidget.ReferenceInlineArchive,
       "2": EditWidget.ReferenceDefineArchive,
     },
-    SearchWidget: null
+    SearchWidget: null,
   },
   "4": {
     Name: ReferenceTypes.OneToManyAggregation,
     EditWidget: {
       "0": EditWidget.ReferenceTokenContainer,
       "1": EditWidget.CascadeDropdown,
+      "2": EditWidget.ReferenceCheckBoxList,
     },
     DisplayWidget: {
       "0": DisplayWidget.ReferenceTokenContainerViewer,
       "1": DisplayWidget.CascadeDropdown,
+      "2": DisplayWidget.ReferenceCheckBoxListViewer,
     },
     DisabledWidget: {
       "0": EditWidget.ReferenceTokenContainer,
       "1": EditWidget.CascadeDropdown,
+      "2": EditWidget.ReferenceCheckBoxList,
     },
-    SearchWidget: null
+    SearchWidget: null,
   },
 };
 
-export const CommonSetting = [
-  Setting.Label,
-  Setting.HelpTooltip,
-  Setting.Direction,
-  Setting.LabelMutable,
-];
+export const CommonSetting = [Setting.Label, Setting.HelpTooltip, Setting.Direction, Setting.LabelMutable];
 
-const ArchiveColumn = [
-  Setting.Label,
-  Setting.HelpTooltip,
-  Setting.Direction,
-];
+const ArchiveColumn = [Setting.Label, Setting.HelpTooltip, Setting.Direction];
 
 export const GroupWidgetSetting: IDictionary<SettingType> = {
   [NoneBindableWidgetType.Fieldset]: { [LayoutType.Define]: [Setting.Label] },
   [NoneBindableWidgetType.HelpBlock]: {
-    [LayoutType.Define]: [
-      Setting.HelpBlock,
-    ]
+    [LayoutType.Define]: [Setting.HelpBlock],
   },
 };
 
 export const DisplayWidgetSetting: IDictionary<SettingType> = {
   [DisplayWidget.DateViewer]: { [LayoutType.Define]: [...CommonSetting, Setting.DefaultValueDate], [LayoutType.Archive]: [...ArchiveColumn, Setting.DefaultValueDate] },
   [DisplayWidget.DateTimeViewer]: {
-    [LayoutType.Define]: [
-      ...CommonSetting,
-      Setting.DefaultValueDateTime,
-    ], [LayoutType.Archive]: [...ArchiveColumn,
-    Setting.DefaultValueDateTime,]
+    [LayoutType.Define]: [...CommonSetting, Setting.DefaultValueDateTime],
+    [LayoutType.Archive]: [...ArchiveColumn, Setting.DefaultValueDateTime],
   },
   [DisplayWidget.TimeViewer]: { [LayoutType.Define]: [...CommonSetting, Setting.DefaultValueTime], [LayoutType.Archive]: [...ArchiveColumn, Setting.DefaultValueTime] },
   [DisplayWidget.Label]: { [LayoutType.Define]: [...CommonSetting], [LayoutType.Archive]: [...ArchiveColumn] },
   [DisplayWidget.LabelNumberWithSeperator]: { [LayoutType.Define]: [...CommonSetting], [LayoutType.Archive]: [...ArchiveColumn] },
   [DisplayWidget.LabelDecimalWithSeperator]: { [LayoutType.Define]: [...CommonSetting], [LayoutType.Archive]: [...ArchiveColumn] },
   [DisplayWidget.ReadonlyCheckbox]: { [LayoutType.Define]: [...CommonSetting], [LayoutType.Archive]: [...ArchiveColumn] },
+  [DisplayWidget.RadioButtonViewer]: { [LayoutType.Define]: [...CommonSetting, Setting.ItemList], [LayoutType.Archive]: [...ArchiveColumn, Setting.ItemList] },
   [DisplayWidget.SwitchViewer]: { [LayoutType.Define]: [...CommonSetting], [LayoutType.Archive]: [...ArchiveColumn] },
   [DisplayWidget.ReferenceAutoCompleteViewer]: {
-    [LayoutType.Define]: [
-      ...CommonSetting,
-      Setting.ReferenceAutoCompleteColumnsConfige,
-    ], [LayoutType.Archive]: [...ArchiveColumn, Setting.ReferenceAutoCompleteColumnsConfige,]
+    [LayoutType.Define]: [...CommonSetting, Setting.ReferenceAutoCompleteColumnsConfige],
+    [LayoutType.Archive]: [...ArchiveColumn, Setting.ReferenceAutoCompleteColumnsConfige],
   },
   [DisplayWidget.ReferenceTokenContainerViewer]: {
-    [LayoutType.Define]: [
-      ...CommonSetting,
-      Setting.ReferenceTokenContainerColumnsConfige,
-    ], [LayoutType.Archive]: [...ArchiveColumn,
-    Setting.ReferenceTokenContainerColumnsConfige,]
+    [LayoutType.Define]: [...CommonSetting, Setting.ReferenceTokenContainerColumnsConfige],
+    [LayoutType.Archive]: [...ArchiveColumn, Setting.ReferenceTokenContainerColumnsConfige],
   },
   [DisplayWidget.ReferenceDefineViewer]: { [LayoutType.Define]: [], [LayoutType.Archive]: [] },
   [DisplayWidget.ReferenceDefineArchiveViewer]: { [LayoutType.Define]: [], [LayoutType.Archive]: [] },
   [DisplayWidget.ReferenceArchiveViewer]: { [LayoutType.Define]: [], [LayoutType.Archive]: [] },
   [DisplayWidget.ReferenceInlineArchiveViewer]: { [LayoutType.Define]: [], [LayoutType.Archive]: [] },
+  [DisplayWidget.ReferenceCheckBoxListViewer]: {
+    [LayoutType.Define]: [...CommonSetting, Setting.ReferenceCheckBoxListColumnsConfig],
+    [LayoutType.Archive]: [...ArchiveColumn, Setting.ReferenceCheckBoxListColumnsConfig],
+  },
+  [DisplayWidget.ReferenceRadioButtonViewer]: {
+    [LayoutType.Define]: [...CommonSetting, Setting.ReferenceRadioButtonColumnsConfig],
+    [LayoutType.Archive]: [...ArchiveColumn, Setting.ReferenceRadioButtonColumnsConfig],
+  },
 };
 
 export const EditWidgetSetting: IDictionary<SettingType> = {
   [EditWidget.TextBox]: { [LayoutType.Define]: [...CommonSetting], [LayoutType.Archive]: [...ArchiveColumn] },
   [EditWidget.Checkbox]: { [LayoutType.Define]: [...CommonSetting], [LayoutType.Archive]: [...ArchiveColumn] },
   [EditWidget.CommaSeparableComboBox]: { [LayoutType.Define]: [...CommonSetting, Setting.ItemList], [LayoutType.Archive]: [...ArchiveColumn, Setting.ItemList] },
+  [EditWidget.RadioButton]: { [LayoutType.Define]: [...CommonSetting, Setting.ItemList], [LayoutType.Archive]: [...ArchiveColumn, Setting.ItemList] },
   [EditWidget.CommaSeparableNumberComboBox]: { [LayoutType.Define]: [...CommonSetting, Setting.ItemList], [LayoutType.Archive]: [...ArchiveColumn, Setting.ItemList] },
   [EditWidget.DatePicker]: { [LayoutType.Define]: [...CommonSetting, Setting.DefaultValueDate], [LayoutType.Archive]: [...ArchiveColumn, Setting.DefaultValueDate] },
   [EditWidget.DateTimePicker]: { [LayoutType.Define]: [...CommonSetting, Setting.DefaultValueDateTime], [LayoutType.Archive]: [...ArchiveColumn, Setting.DefaultValueDateTime] },
@@ -429,48 +419,52 @@ export const EditWidgetSetting: IDictionary<SettingType> = {
   [EditWidget.TextArea]: { [LayoutType.Define]: [...CommonSetting], [LayoutType.Archive]: [...ArchiveColumn] },
   [EditWidget.URL]: { [LayoutType.Define]: [...CommonSetting], [LayoutType.Archive]: [...ArchiveColumn] },
   [EditWidget.ReferenceAutoComplete]: {
-    [LayoutType.Define]: [
-      ...CommonSetting,
-      Setting.ReferenceAutoCompleteColumnsConfige,
-    ], [LayoutType.Archive]: [...ArchiveColumn, Setting.ReferenceAutoCompleteColumnsConfige]
+    [LayoutType.Define]: [...CommonSetting, Setting.ReferenceAutoCompleteColumnsConfige],
+    [LayoutType.Archive]: [...ArchiveColumn, Setting.ReferenceAutoCompleteColumnsConfige],
   },
   [EditWidget.ReferenceTokenContainer]: {
-    [LayoutType.Define]: [
-      ...CommonSetting,
-      Setting.ReferenceTokenContainerColumnsConfige,
-    ], [LayoutType.Archive]: [...ArchiveColumn, Setting.ReferenceTokenContainerColumnsConfige]
+    [LayoutType.Define]: [...CommonSetting, Setting.ReferenceTokenContainerColumnsConfige],
+    [LayoutType.Archive]: [...ArchiveColumn, Setting.ReferenceTokenContainerColumnsConfige],
   },
   [EditWidget.ReferenceDefine]: { [LayoutType.Define]: [], [LayoutType.Archive]: [] },
   [EditWidget.ReferenceDefineArchive]: { [LayoutType.Define]: [], [LayoutType.Archive]: [] },
   [EditWidget.ReferenceArchive]: { [LayoutType.Define]: [], [LayoutType.Archive]: [] },
   [EditWidget.ReferenceInlineArchive]: { [LayoutType.Define]: [], [LayoutType.Archive]: [] },
   [EditWidget.CascadeDropdown]: {
-    [LayoutType.Define]: [
-      ...CommonSetting,
-      Setting.CascadeDropDownLevel,
-      Setting.CascadeDropdownSelectedColumns,
-    ], [LayoutType.Archive]: [...ArchiveColumn],
-
+    [LayoutType.Define]: [...CommonSetting, Setting.CascadeDropDownLevel, Setting.CascadeDropdownSelectedColumns],
+    [LayoutType.Archive]: [...ArchiveColumn],
   },
   [EditWidget.StaffSelectorOneToOne]: {
-    [LayoutType.Define]: [...CommonSetting,Setting.DefaultStaff],
-    [LayoutType.Archive]: [...ArchiveColumn,Setting.DefaultStaff]
+    [LayoutType.Define]: [...CommonSetting, Setting.DefaultStaff],
+    [LayoutType.Archive]: [...ArchiveColumn, Setting.DefaultStaff],
   },
   [EditWidget.StaffSelectorOneToMany]: {
-    [LayoutType.Define]: [...CommonSetting,Setting.DefaultStaff],
-    [LayoutType.Archive]: [...ArchiveColumn,Setting.DefaultStaff]
+    [LayoutType.Define]: [...CommonSetting, Setting.DefaultStaff],
+    [LayoutType.Archive]: [...ArchiveColumn, Setting.DefaultStaff],
+  },
+  [EditWidget.ReferenceCheckBoxList]: {
+    [LayoutType.Define]: [...CommonSetting, Setting.ReferenceCheckBoxListColumnsConfig],
+    [LayoutType.Archive]: [...ArchiveColumn, Setting.ReferenceCheckBoxListColumnsConfig],
+  },
+  [EditWidget.ReferenceRadioButton]: {
+    [LayoutType.Define]: [...CommonSetting, Setting.ReferenceRadioButtonColumnsConfig],
+    [LayoutType.Archive]: [...ArchiveColumn, Setting.ReferenceRadioButtonColumnsConfig],
   },
 };
 
 export const EditWidgetInitialValidation: IDictionary<Array<object>> = {
-  [EditWidget.Email]: [{
-    Type: ValidationType.Regex,
-    Setting: JSON.stringify({ Regex: '^\\s*(((?!\\.)[a-zA-Z0-9_\\-\\.]+)@([a-zA-Z0-9\\-]+\\.)+([a-zA-Z]{2,}))\\s*$' }),
-  }],
-  [EditWidget.URL]: [{
-    Type: ValidationType.Regex,
-    Setting: JSON.stringify({ Regex: '^[-a-zA-Z0-9@:%_\\+.~#?&//=]{2,256}\\.[a-z]{2,4}(\\/[-a-zA-Z0-9@:%_\\+.~#?&//=]*)?$' }),
-  }]
+  [EditWidget.Email]: [
+    {
+      Type: ValidationType.Regex,
+      Setting: JSON.stringify({ Regex: "^\\s*(((?!\\.)[a-zA-Z0-9_\\-\\.]+)@([a-zA-Z0-9\\-]+\\.)+([a-zA-Z]{2,}))\\s*$" }),
+    },
+  ],
+  [EditWidget.URL]: [
+    {
+      Type: ValidationType.Regex,
+      Setting: JSON.stringify({ Regex: "^[-a-zA-Z0-9@:%_\\+.~#?&//=]{2,256}\\.[a-z]{2,4}(\\/[-a-zA-Z0-9@:%_\\+.~#?&//=]*)?$" }),
+    },
+  ],
 };
 
 export const WidgetSettingMap = {
@@ -480,24 +474,24 @@ export const WidgetSettingMap = {
 };
 
 export const EditWidgetIcon = {
- [EditWidget.TextBox]: 'text-field',
- [EditWidget.Checkbox]: 'checkbox',
- [EditWidget.CommaSeparableComboBox]: 'dropdown',
- [EditWidget.CommaSeparableNumberComboBox]: 'dropdown',
- [EditWidget.DatePicker]: 'calendar',
- [EditWidget.DateTimePicker]: 'calendar',
- [EditWidget.Email]: 'mail',
- [EditWidget.EmptyBlock]: '',
- [EditWidget.ExtensionLite]: '',
- [EditWidget.Guid]: '',
- [EditWidget.InputDecimal]: 'numerical-field',
- [EditWidget.InputDecimalWithSeperator]: 'numerical-field',
- [EditWidget.InputNumber]: 'numerical-field',
- [EditWidget.InputNumberWithSeperator]: 'numerical-field',
- [EditWidget.InputHotkey]: 'hotkey-field',
- [EditWidget.Switch]: 'switch',
- [EditWidget.TextArea]: 'textarea',
- [EditWidget.TimePicker]: 'clock',
- [EditWidget.URL]: 'url',
- [EditWidget.HelpBlock]: 'info-circle-o'
-}
+  [EditWidget.TextBox]: "text-field",
+  [EditWidget.Checkbox]: "checkbox",
+  [EditWidget.CommaSeparableComboBox]: "dropdown",
+  [EditWidget.CommaSeparableNumberComboBox]: "dropdown",
+  [EditWidget.DatePicker]: "calendar",
+  [EditWidget.DateTimePicker]: "calendar",
+  [EditWidget.Email]: "mail",
+  [EditWidget.EmptyBlock]: "",
+  [EditWidget.ExtensionLite]: "",
+  [EditWidget.Guid]: "",
+  [EditWidget.InputDecimal]: "numerical-field",
+  [EditWidget.InputDecimalWithSeperator]: "numerical-field",
+  [EditWidget.InputNumber]: "numerical-field",
+  [EditWidget.InputNumberWithSeperator]: "numerical-field",
+  [EditWidget.InputHotkey]: "hotkey-field",
+  [EditWidget.Switch]: "switch",
+  [EditWidget.TextArea]: "textarea",
+  [EditWidget.TimePicker]: "clock",
+  [EditWidget.URL]: "url",
+  [EditWidget.HelpBlock]: "info-circle-o",
+};

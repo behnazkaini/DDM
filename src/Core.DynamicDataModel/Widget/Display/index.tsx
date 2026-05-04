@@ -16,6 +16,9 @@ import TimeViewer from "./timeViewer";
 import { IWidget } from "../../../typings/Core.DynamicDataModel/Types";
 import UndefinedComponent from "../NoneBindable/UndefinedComponent";
 import CascadeDropdown from './cascadeDropdown/index';
+import ReferenceCheckBoxListViewer from "./referenceCheckBoxListViewer";
+import ReferenceRadioButtonViewer from "./referenceRadioButtonViewer";
+import RadioButtonViewer from "./radioButtonViewer";
 
 const WIDGETS: { [name: string]: IWidget } = {
   [DisplayWidget.Label]: {
@@ -62,6 +65,15 @@ const WIDGETS: { [name: string]: IWidget } = {
   },
   [DisplayWidget.UndefinedComponent]: {
     component: UndefinedComponent.component,
+  },
+  [DisplayWidget.RadioButtonViewer]: {
+    component: RadioButtonViewer.component,
+  },
+  [DisplayWidget.ReferenceCheckBoxListViewer]: {
+    component: ReferenceCheckBoxListViewer.component,
+  },
+  [DisplayWidget.ReferenceRadioButtonViewer]: {
+    component: ReferenceRadioButtonViewer.component,
   }
 };
 

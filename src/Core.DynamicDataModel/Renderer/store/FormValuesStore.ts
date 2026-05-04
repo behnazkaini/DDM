@@ -49,13 +49,21 @@ export type FormStoreState = FormSnapshot & FormStoreActions;
 /** The Zustand vanilla store type — one instance per layout. */
 export type FormStore = ReturnType<typeof createFormStore>;
 
-/** Create an isolated Zustand store for one layout instance. */
-export function createFormStore(graph: DerivationGraph) {
+/** Create an isolated Zustand store for one layout instance.
+ *  Pass `initialFields` and `initialGridRows` to seed the store with the
+ *  server's initial row data so the first derivation run produces correct
+ *  values instead of computing from empty state.
+ */
+export function createFormStore(
+  graph: DerivationGraph,
+  initialFields: Record<string, any> = {},
+  initialGridRows: Record<string, Record<string, any>[]> = {},
+) {
   return createStore<FormStoreState>((set, get) => {
-    const { derived, fieldMeta } = runDerivations(graph, {}, {});
+    const { derived, fieldMeta } = runDerivations(graph, initialFields, initialGridRows);
     return {
-      fields: {},
-      gridRows: {},
+      fields: initialFields,
+      gridRows: initialGridRows,
       derived,
       fieldMeta,
 

@@ -27,6 +27,7 @@ interface CustomEditComponentProps {
   dataModelGuid?: string
   isGrid?: boolean
   dataModels?: DataModelViewModel[]
+  rules?: Array<{ required: boolean }>
 }
 
 
@@ -45,7 +46,8 @@ function CustomEditComponent(props: CustomEditComponentProps) {
     primaryKey,
     dataModelGuid,
     isGrid = false,
-    dataModels
+    dataModels,
+    rules
   } = props;
   const test = React.useMemo(() => {
     const formData = initValue.find(x => x.rowKey === dataIndex).formData;
@@ -60,7 +62,7 @@ function CustomEditComponent(props: CustomEditComponentProps) {
   }, []);
 
   return (
-    <Component value={value || undefined} mode={mode} validationRules={validationRules} initValue={test.currentInitValue} onChange={(val) => { onChange(val) }} {...test.referenceColumnSetting} primaryKey={primaryKey} dataModelGuid={dataModelGuid} isGrid={isGrid} dataModels={dataModels} />
+    <Component value={value || undefined} mode={mode} validationRules={validationRules} initValue={test.currentInitValue} onChange={(val) => { onChange(val) }} {...test.referenceColumnSetting} primaryKey={primaryKey} dataModelGuid={dataModelGuid} isGrid={isGrid} dataModels={dataModels} rules={rules} />
   )
 }
 
@@ -73,7 +75,10 @@ function CustomViewComponent({ onChange = () => { },
   index,
   record,
   dataIndex,
-  validationRules, isGrid }: CustomEditComponentProps) {
+  validationRules,
+  isGrid,
+  rules
+}: CustomEditComponentProps) {
 
   const test = React.useMemo(() => {
     const formData = initValue.find(x => x.rowKey === dataIndex).formData;
@@ -87,13 +92,13 @@ function CustomViewComponent({ onChange = () => { },
     }
   }, []);
   return (
-    <Component value={value} validationRules={validationRules} mode={mode} initValue={test.currentInitValue} onChange={(val) => { onChange(val) }} {...test.referenceColumnSetting} isGrid={isGrid} />
+    <Component value={value} validationRules={validationRules} mode={mode} initValue={test.currentInitValue} onChange={(val) => { onChange(val) }} {...test.referenceColumnSetting} isGrid={isGrid} rules={rules} />
   )
 
 }
 
 export const ReferenceArchive = (props: ReferenceArchiveWidgetProps<Array<ReferenceArchiveValue>>) => {
-  const { initValue, mode, columns, onRowClick, onActionOnTable, layoutDesign, validationRules, onChange = () => { }, primaryKey, dataModelGuid, currentLayout, layoutGuid, softwareGuid, context, label ,dataModels} = props;
+  const { initValue, mode, columns, onRowClick, onActionOnTable, layoutDesign, validationRules, onChange = () => { }, primaryKey, dataModelGuid, currentLayout, layoutGuid, softwareGuid, context, label, dataModels } = props;
   const { Widget } = layoutDesign;
   const {
     HasPagination = false,
@@ -109,50 +114,50 @@ export const ReferenceArchive = (props: ReferenceArchiveWidgetProps<Array<Refere
     onChange(value, dataIndex);
   }
 
-  const handleSortColumn = async (rows, sortType, dataIndex,dataType) => {
-    
+  const handleSortColumn = async (rows, sortType, dataIndex, dataType) => {
+
     const model = {
       LayoutGuid: layoutGuid,
       PrimaryKey: primaryKey,
       SoftwareGuid: softwareGuid,
-      ColumnOptions:{ColumnGuid:dataIndex,SortType:sortType?SortType[sortType]:SortType.None,Filter:{Value:''}},
+      ColumnOptions: { ColumnGuid: dataIndex, SortType: sortType ? SortType[sortType] : SortType.None, Filter: { Value: '' } },
     };
-    
+
     const isAdded = rows.some((row) => row.__status === "added");
-    try{
-    if (isAdded) {
+    try {
+      if (isAdded) {
         Modal.warning({
           title: translate('SortWarningMessage'),
           okText: translate('Confirm'),
         });
         throw new Error('cancel')
-    }
-        const data = await transportLayer(context.ajax).GetConditionValueByPrimaryKey(model);
-        const tableData = data.Row.KeyValues.find((value) => {
-          if (Array.isArray(value.Value)) {
-            return value.Value.some((val) => val.KeyValues.some((key) => key.Key === dataIndex));
-          } else {
-            return false;
-          }
-        });
-    
-        if (tableData) {
-          const sortedRow = tableData.Value.map((val) => {
-            const rowData = {};
-            const selectedRow = rows?.find((r) => r.Guid === val.PrimaryKey);
-            val.KeyValues?.forEach((keyValue) => {
-              if (selectedRow) {
-                  rowData[keyValue.Key] = selectedRow[keyValue.Key];
-              }
-            });
-            return { Guid: val.PrimaryKey, ...rowData };
-          });
-    
-          return sortedRow;
-        }
-      }catch(err){
-        throw err
       }
+      const data = await transportLayer(context.ajax).GetConditionValueByPrimaryKey(model);
+      const tableData = data.Row.KeyValues.find((value) => {
+        if (Array.isArray(value.Value)) {
+          return value.Value.some((val) => val.KeyValues.some((key) => key.Key === dataIndex));
+        } else {
+          return false;
+        }
+      });
+
+      if (tableData) {
+        const sortedRow = tableData.Value.map((val) => {
+          const rowData = {};
+          const selectedRow = rows?.find((r) => r.Guid === val.PrimaryKey);
+          val.KeyValues?.forEach((keyValue) => {
+            if (selectedRow) {
+              rowData[keyValue.Key] = selectedRow[keyValue.Key];
+            }
+          });
+          return { Guid: val.PrimaryKey, ...rowData };
+        });
+
+        return sortedRow;
+      }
+    } catch (err) {
+      throw err
+    }
   };
 
   const tableColumns = React.useMemo<ModernTableColumnProps<any>[]>(
@@ -186,6 +191,7 @@ export const ReferenceArchive = (props: ReferenceArchiveWidgetProps<Array<Refere
             dataModelGuid={dataModelGuid}
             isGrid={true}
             dataModels={dataModels}
+            rules={[column.rules]}
           /> : layoutItemDesign?.Widget === 'DisplayWidget' ? (column.viewComponent as any).component : (column.editComponent as any).component,
           viewComponent: mode === 'render' ? ({ value, record, onChange, index }) => <CustomViewComponent
             onChange={(value) => handleChange(value, onChange, record, column.dataIndex)}
@@ -200,12 +206,13 @@ export const ReferenceArchive = (props: ReferenceArchiveWidgetProps<Array<Refere
             setting={column.staticProps.columnSetting}
             isGrid={true}
             dataModels={dataModels}
+            rules={[column.rules]}
           /> : (column.viewComponent as any).component,
           filter: (a, b, c) => !!SearchSetting.ColumnViewModelGuid && (SearchSetting.ColumnViewModelGuid.toLowerCase() === column.dataIndex.toLowerCase()) ? filterInclude(a, b, c, column.dataIndex) : undefined,
           Filter: !!SearchSetting.ColumnViewModelGuid && (SearchSetting.ColumnViewModelGuid.toLowerCase() === column.dataIndex.toLowerCase()) ? getColumnFilterComponent(column.staticProps?.dataType) : undefined,
           width: 150,
           sort: handleSortColumn as any,
-          resizable:  mode === 'render' ? true : false
+          resizable: mode === 'render' ? true : false
         } as ModernTableColumnProps<any>;
       }),
     []
@@ -276,9 +283,9 @@ export const ReferenceArchive = (props: ReferenceArchiveWidgetProps<Array<Refere
   function getCustomItems() {
     return (!Widget.ImpossibilityAdd ? [
       <Button type={'primary'} onClick={() => handleAddNewRow(getData().length)}>{translate('Add')}</Button>
-    ]: null);
+    ] : null);
   }
-  
+
   const {
     data,
     tableConfig,
@@ -339,7 +346,8 @@ export const ReferenceArchive = (props: ReferenceArchiveWidgetProps<Array<Refere
         onChange={onChangeHandler}
         placeholder={`${translate("Search")} ${translate("For")} ${count} ${translate("Record")}...`}
       />
-    )}
+    )
+  }
 
   function BooleanColumnFilter({
     column: { filterValue, setFilter, id },
@@ -350,13 +358,13 @@ export const ReferenceArchive = (props: ReferenceArchiveWidgetProps<Array<Refere
       setValue(e.target.checked);
       setFilter(e.target.checked || undefined);
     }
-      return (
-        <Checkbox
-          checked={value}
-          onChange={onChangeHandler}
-        />
-      )
-    }
+    return (
+      <Checkbox
+        checked={value}
+        onChange={onChangeHandler}
+      />
+    )
+  }
 
   function filterInclude(rows: any, id: any, filterValue: any, dataIndex) {
     return rows.filter(row => {

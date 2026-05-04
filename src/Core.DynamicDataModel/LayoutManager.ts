@@ -209,11 +209,11 @@ class DefineLayoutHelper extends LayoutHelper<LayoutViewModel, DefineLayoutDesig
 
 	getNewLayout(props: { relationViewModel?: RelationViewModel, newLayoutGuid: string, dataModelGuid: string, dataModelsResult: any }): DefineLayoutDesignerViewModel {
 		const { relationViewModel, newLayoutGuid, dataModelGuid, dataModelsResult } = props;
-
+		const formLabel = this.isSimpleDesignerMode ? `${translate(`Form`)} ${translate(`LayoutType_Define`)}` : '';
 		return {
 			DataModelGuid: dataModelGuid,
 			Guid: newLayoutGuid,
-			Label: `${translate(`Form`)} ${translate(`LayoutType_Define`)}`,
+			Label: formLabel,
 			Type: LayoutType.Define,
 			PlatformType: LayoutPlatformType.Web,
 			Design: JSON.stringify({
@@ -230,6 +230,7 @@ class DefineLayoutHelper extends LayoutHelper<LayoutViewModel, DefineLayoutDesig
 			DataModelInfo: dataModelsResult ? dataModelsResult : {
 				status: 'added'
 			},
+			ShowFormItemLabelInSepratedRow: false
 		}
 	}
 
@@ -321,6 +322,7 @@ class ArchiveLayoutHelper extends LayoutHelper<LayoutViewModelWithState, Archive
 			State: "Added",
 			Plugins: [],
 			DataModelInfo: {},
+			ShowFormItemLabelInSepratedRow: false
 		};
 
 		return newLayoutDesigner;
@@ -457,6 +459,7 @@ class DefineArchiveLayoutHelper extends LayoutHelper<LayoutViewModel, DefineArch
 			DefineLayoutGuid: null,
 			Plugins: [],
 			DataModelInfo: dataModelsResult,
+			ShowFormItemLabelInSepratedRow: false
 		};
 		return newLayoutDesigner;
 	}
@@ -569,11 +572,11 @@ class InlineArchiveLayoutHelper extends LayoutHelper<LayoutViewModel, InlineArch
 
 	getNewLayout(props: { relationViewModel?: RelationViewModel, newLayoutGuid: string, dataModelGuid: string }): InlineArchiveLayoutDesignerViewModel {
 		const { relationViewModel, newLayoutGuid, dataModelGuid } = props;
-
+		const formLabel = this.isSimpleDesignerMode ? `${translate(`Form`)} ${translate(`LayoutType_Define`)}` : '';
 		const newLayoutDesigner: InlineArchiveLayoutDesignerViewModel = {
 			Guid: newLayoutGuid,
 			DataModelGuid: dataModelGuid,
-			Label: `${translate(`Form`)} ${translate(`LayoutType_Define`)}`,
+			Label: formLabel,
 			Type: LayoutType.InlineArchive,
 			PlatformType: LayoutPlatformType.Web,
 			Design: JSON.stringify({
@@ -595,6 +598,7 @@ class InlineArchiveLayoutHelper extends LayoutHelper<LayoutViewModel, InlineArch
 			ComplexValidations: [],
 			Plugins: [],
 			DataModelInfo: {},
+			ShowFormItemLabelInSepratedRow: false
 		};
 
 		return newLayoutDesigner;

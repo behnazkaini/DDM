@@ -1,22 +1,28 @@
 ﻿import * as React from "react";
-import { injectContext, Label } from "didgah/ant-core-component";
-import { calendar } from "didgah/common";
+import { DateTimePicker, injectContext, Label } from "didgah/ant-core-component";
 import { ComponentProps, IWidget } from "../../../typings/Core.DynamicDataModel/Types";
+
+
+enum DefaultValueEnum {
+  CurrentDate = '0'
+}
 
 const DateTimeViewer = (props: ComponentProps) => {
   const { value, DefaultValue } = props;
-  const dateValue = value != null ? value : DefaultValue;
 
-  if (DefaultValue && props.value == null) {
-    props.onChange(calendar.calculateDateByDayNumber(dateValue) as any);
+  const getValue = () => {
+    let dateValue = value;
+    if (!dateValue && (DefaultValue === DefaultValueEnum.CurrentDate)) dateValue = new Date()
+    return dateValue
   }
 
   return (
-    <Label>
-      {calendar.getShortDateTime(
-        calendar.calculateDateByDayNumber(dateValue) as any
-      )}
-    </Label>
+    <div style={{ pointerEvents: 'none' }}>
+      <DateTimePicker
+        defaultValue={getValue()}
+        valueType="string"
+      />
+    </div>
   );
 };
 

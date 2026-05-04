@@ -5,13 +5,13 @@ import { WidgetType } from "../../../typings/Core.DynamicDataModel/Enums";
 import { checkIsWidgetDisabled } from "./helper";
 
 const TimePickerWidget = (props: ComponentProps<string>) => {
-  const { value, onChange, DefaultValue, mode, Disabled, Widget } = props;
+  const { value, onChange, DefaultValue, mode, Disabled, Widget, resetForm } = props;
 
   const handleChange = (selectedDate) => {
     if (mode === "render") {
       onChange(selectedDate);
     }
-    props.resetForm()
+    typeof resetForm === 'function' && resetForm()
   }
 
   React.useEffect(() => {

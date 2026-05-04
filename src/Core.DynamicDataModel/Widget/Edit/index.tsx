@@ -25,6 +25,9 @@ import CommaSeparableNumberComboBox from "./CommaSeparableNumberComboBox";
 import { DisplayWidget, EditWidget } from "../../../typings/Core.DynamicDataModel/Enums";
 import UndefinedComponent from "../NoneBindable/UndefinedComponent";
 import cascadeDropdown from "./cascadeDropdown/index";
+import RadioButton from "./radioButton";
+import ReferenceCheckBoxList from "./referenceCheckBoxList";
+import ReferenceRadioButton from "./referenceRadioButton";
 
 const WIDGETS: { [name: string]: IWidget } = {
   [EditWidget.TextBox]: {
@@ -98,7 +101,16 @@ const WIDGETS: { [name: string]: IWidget } = {
   },
   [EditWidget.InputHotkey]: {
     component: InputHotkey.component,
-  }
+  },
+  [EditWidget.RadioButton]: {
+    component: RadioButton.component,
+  },
+  [EditWidget.ReferenceCheckBoxList]: {
+    component: ReferenceCheckBoxList.component,
+  },
+  [EditWidget.ReferenceRadioButton]: {
+    component: ReferenceRadioButton.component,
+  },
 };
 
 export default (id: string) => {

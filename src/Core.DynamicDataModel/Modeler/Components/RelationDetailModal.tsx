@@ -70,7 +70,7 @@ function RelationDetailModal({
         const behaviourInformation = behaviourInformations.find(info => info.Type === dataModelType).RelationBehaviors.find(relationBehavior => relationBehavior.DataModelType === dataModelType).Details.find(detail => detail.RelationType === Number(selectedRelationType) && detail.RelationNature === Number(selectedNature))
         const canCreate = behaviourInformation.CanCreate;
         const canReuse = behaviourInformation.CanReuse;
-        const ds = canReuse ? result.map(rc => ({ value: rc.Guid, label: `${rc.Name}, ${rc.Label}, ${translate('DDMModeler_' + DataModelType[rc.Type])}` })) : [];
+        const ds = canReuse ? result.map(rc => ({ value: rc.Guid, label: `${rc.Name}, ${translate(rc.Label)}, ${translate('DDMModeler_' + DataModelType[rc.Type])}` })) : [];
         if (canCreate && +selectedNature!==+RelationNature.Aggregation) {
           ds.splice(0, 0, {
             label: translate('DDMModeler_AddModel'),

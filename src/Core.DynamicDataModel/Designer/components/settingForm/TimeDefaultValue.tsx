@@ -17,21 +17,21 @@ const TimeDefaultValue = (props: SettingFormItemProps<BaseColumnSetting>) => {
   }, [getFieldValue(Setting.DefaultValue)]);
 
   return (
-      <Form.Item
-        key={key}
-        label={translate("DefaultValue")}
-        labelCol={{ span: 0 }}
-        wrapperCol={{ span: 24 }}
-        colon={false}
-      >
-        {form.getFieldDecorator(Setting.DefaultValue, {
-          initialValue: initialSettingValues.DefaultValue,
-          getValueFromEvent
-        })(<TimePickerEx 
-          valueType="string" 
-        />
-        )}
-      </Form.Item>
+    <Form.Item
+      key={key}
+      label={translate("DefaultValue")}
+      labelCol={{ span: 0 }}
+      wrapperCol={{ span: 24 }}
+      colon={false}
+    >
+      {form.getFieldDecorator(Setting.DefaultValue, {
+        initialValue: initialSettingValues.DefaultValue === '0' ? null : initialSettingValues.DefaultValue,
+        getValueFromEvent
+      })(<TimePickerEx
+        valueType="string"
+      />
+      )}
+    </Form.Item>
   );
 };
 

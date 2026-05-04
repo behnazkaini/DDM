@@ -1,9 +1,8 @@
-import { Button, DidgahContextProps, Modal } from 'didgah/ant-core-component'
+import { Button, DidgahContextProps, Modal, WrappedFormUtils } from 'didgah/ant-core-component'
 import { LayoutValueResponseViewModel } from '../../../../Models/Chargoon.Didgah.Core.DynamicDataModel.BaseAPI.ViewModels.LayoutValueResponseViewModel';
-import * as React from 'react'
-import { ComplexValidationResultProps, GetterSavedDataProps, ISetupData, ValidationResult } from '../../../../typings/Core.DynamicDataModel/Types';
+import React, { useRef } from 'react'
+import { GetterSavedDataProps, ISetupData, ValidationResult } from '../../../../typings/Core.DynamicDataModel/Types';
 import DefineLayout from '../defineLayout/defineLayout'
-import { SaveRowViewModel } from '../../../../Models/Chargoon.Didgah.Core.DynamicDataModel.BaseAPI.ViewModels.SaveRowViewModel';
 import { KeyValueViewModel } from '../../../../Models/Chargoon.Didgah.Core.DynamicDataModel.BaseAPI.ViewModels.KeyValueViewModel';
 import { RowViewModel } from '../../../../Models/Chargoon.Didgah.Core.DynamicDataModel.BaseAPI.ViewModels.RowViewModel';
 import { translate } from 'didgah/common';
@@ -51,7 +50,7 @@ export default function DefineLayoutModal({
   softwareGuid,
   impossibilityAdd
 }: DefineLayoutModalProps) {
-  const form = React.useRef<any>()
+  const form = useRef<WrappedFormUtils>()
   function getKeyValueList(row: RowViewModel<any>, selectedRecord) {
     const keyValueList: KeyValueViewModel<string, Object>[] = [];
     const extraDataFormThatIsNotOnRecord = !!row ? [...row.KeyValues] : [];

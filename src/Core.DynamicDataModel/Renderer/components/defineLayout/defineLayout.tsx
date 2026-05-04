@@ -220,7 +220,30 @@ function DefineLayout({
     // Build the data-driven derivation graph from the layout's Design events.
     // No Blockly runtime is used; the CodeXml is parsed by regex in derivationParser.
     const graph = buildDerivationGraph(designSetting.current.Events, layout, result.Layouts);
-    storeRef.current = createFormStore(graph);
+
+    // Seed the store with the server's initial row data so the very first
+    // derivation run (inside createFormStore) sees real values, not zeros.
+    const initialFields: Record<string, any> = {};
+    const initialGridRows: Record<string, Record<string, any>[]> = {};
+    const seedRow = result?.Row as any;
+    if (seedRow?.KeyValues) {
+      (seedRow.KeyValues as any[]).forEach((kv: any) => {
+        if (Array.isArray(kv.Value)) {
+          // Grid / composition relation — convert to column-keyed flat rows.
+          initialGridRows[kv.Key] = (kv.Value as any[]).map((rowItem: any) => {
+            const rec: Record<string, any> = { Guid: rowItem.PrimaryKey };
+            (rowItem.KeyValues ?? []).forEach((colKv: any) => {
+              rec[colKv.Key] = colKv.Value;
+            });
+            return rec;
+          });
+        } else {
+          initialFields[kv.Key] = kv.Value;
+        }
+      });
+    }
+
+    storeRef.current = createFormStore(graph, initialFields, initialGridRows);
 
     // Pass empty events to SetupData — derivations are now handled by the store.
       const data = new SetupData({

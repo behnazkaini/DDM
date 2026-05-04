@@ -153,6 +153,8 @@ const RelationTypesOperators = (id: string, configeProps: object): ILayoutItemCo
                     { operator: ConditionType.HasNotValue, Widget: null, dataType: ColumnDataType.Boolean, extraProps: {} },
                     { operator: ConditionType.Equals, Widget: (EditWidgets(EditWidget.ReferenceAutoComplete) as IWidget).component, dataType: { Nature: RelationNature.Aggregation, Type: RelationType.OneToOne }, extraProps: { ...configeProps } },
                     { operator: ConditionType.NotEquals, Widget: (EditWidgets(EditWidget.ReferenceAutoComplete) as IWidget).component, dataType: { Nature: RelationNature.Aggregation, Type: RelationType.OneToOne }, extraProps: { ...configeProps } },
+                    { operator: ConditionType.Equals, Widget: (EditWidgets(EditWidget.ReferenceRadioButton) as IWidget).component, dataType: { Nature: RelationNature.Aggregation, Type: RelationType.OneToOne }, extraProps: { ...configeProps } },
+                    { operator: ConditionType.NotEquals, Widget: (EditWidgets(EditWidget.ReferenceRadioButton) as IWidget).component, dataType: { Nature: RelationNature.Aggregation, Type: RelationType.OneToOne }, extraProps: { ...configeProps } },
                 ]
             }
         case "2":
@@ -163,12 +165,16 @@ const RelationTypesOperators = (id: string, configeProps: object): ILayoutItemCo
                     { operator: ConditionType.HasNotValue, Widget: null, dataType: ColumnDataType.Boolean, extraProps: {} },
                     { operator: ConditionType.Equals, Widget: (EditWidgets(EditWidget.ReferenceTokenContainer) as IWidget).component, dataType: { Nature: RelationNature.Aggregation, Type: RelationType.OneToMany }, extraProps: { ...configeProps } },
                     { operator: ConditionType.NotEquals, Widget: (EditWidgets(EditWidget.ReferenceTokenContainer) as IWidget).component, dataType: { Nature: RelationNature.Aggregation, Type: RelationType.OneToMany }, extraProps: { ...configeProps } },
+                    { operator: ConditionType.Equals, Widget: (EditWidgets(EditWidget.ReferenceCheckBoxList) as IWidget).component, dataType: { Nature: RelationNature.Aggregation, Type: RelationType.OneToMany }, extraProps: { ...configeProps } },
+                    { operator: ConditionType.NotEquals, Widget: (EditWidgets(EditWidget.ReferenceCheckBoxList) as IWidget).component, dataType: { Nature: RelationNature.Aggregation, Type: RelationType.OneToMany }, extraProps: { ...configeProps } },
                     { operator: ConditionType.GreaterEquals, Widget: injectContext(InputNumber), dataType: ColumnDataType.Integer, extraProps: { min: 0 } },
                     { operator: ConditionType.LowerEquals, Widget: injectContext(InputNumber), dataType: ColumnDataType.Integer, extraProps: { min: 0 } },
                     { operator: ConditionType.Greater, Widget: injectContext(InputNumber), dataType: ColumnDataType.Integer, extraProps: { min: 0 } },
                     { operator: ConditionType.Lower, Widget: injectContext(InputNumber), dataType: ColumnDataType.Integer, extraProps: { min: 0 } },
                     { operator: ConditionType.Contains, Widget: (EditWidgets(EditWidget.ReferenceTokenContainer) as IWidget).component, dataType: { Nature: RelationNature.Aggregation, Type: RelationType.OneToMany }, extraProps: { ...configeProps } },
                     { operator: ConditionType.NotContains, Widget: (EditWidgets(EditWidget.ReferenceTokenContainer) as IWidget).component, dataType: { Nature: RelationNature.Aggregation, Type: RelationType.OneToMany }, extraProps: { ...configeProps } },
+                    { operator: ConditionType.Contains, Widget: (EditWidgets(EditWidget.ReferenceCheckBoxList) as IWidget).component, dataType: { Nature: RelationNature.Aggregation, Type: RelationType.OneToMany }, extraProps: { ...configeProps } },
+                    { operator: ConditionType.NotContains, Widget: (EditWidgets(EditWidget.ReferenceCheckBoxList) as IWidget).component, dataType: { Nature: RelationNature.Aggregation, Type: RelationType.OneToMany }, extraProps: { ...configeProps } },
                 ]
             }
         default:
