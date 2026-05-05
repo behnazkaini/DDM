@@ -115,12 +115,15 @@ function OperationOnEventDetail({ selectedRecord, onSave, onCancel }: Props) {
     )
   );
 
+  const getGridNodeFromRow = (row?: EventRow) =>
+    row?.extraData?.parentGrid ?? row?.extraData?.layoutItem;
+
   const [layoutItemDataSource, setLayoutItemDataSource] = useState<any[]>(() => {
     const rows = selectedRecord?.events?.Condition?.Condition?.map((c: any) => ({
       id: '', field: c.Field, fieldText: c.Text ?? c.Field,
       operator: Number(c.Operator), extraData: c.ExtraData,
     })) ?? [];
-    return getGridEventFromRows(rows)?.extraData?.layoutItem?.Children ?? [];
+    return getGridNodeFromRow(getGridEventFromRows(rows))?.Children ?? [];
   });
 
   function getFieldType(fieldGuid: string): LayoutItemType | null {
@@ -153,7 +156,7 @@ function OperationOnEventDetail({ selectedRecord, onSave, onCancel }: Props) {
   function syncGridState(rows: EventRow[]) {
     const gridEvent = getGridEventFromRows(rows);
     setIsGridEventSelected(!!gridEvent);
-    setLayoutItemDataSource(gridEvent?.extraData?.layoutItem?.Children ?? []);
+    setLayoutItemDataSource(getGridNodeFromRow(gridEvent)?.Children ?? []);
   }
 
   function handleConfirmEvent() {
@@ -250,20 +253,36 @@ function OperationOnEventDetail({ selectedRecord, onSave, onCancel }: Props) {
     .filter((item: any) => item.Metadata?.Type === LayoutItemType.Column)
     .map((item: any) => ({ key: item.Text, value: item.Id }));
 
+  function getFieldDataSource(field: string, fallbackText?: string) {
+    if (!field || layoutItems.some(i => i.value === field)) return layoutItems;
+    return [...layoutItems, { key: fallbackText ?? field, value: field }];
+  }
+
+  const gridActionsDs: SelectItem[] = Object.keys(ColumnActions)
+    .filter(k => isNaN(k as any))
+    .map(k => ({ key: translate(`DDM_${k}`), value: (ColumnActions as any)[k] }));
+
+  const functionDs: SelectItem[] = [{ key: 'SUM', value: 'SUM' }];
+
   function renderActionEditRow(draft: DraftAction) {
     if (isGridEventSelected) {
-      const gridActionsDs = Object.keys(ColumnActions)
-        .filter(k => isNaN(k as any))
-        .map(k => ({ key: translate(`DDM_${k}`), value: ColumnActions[k] }));
-
       return (
         <Card>
           <Row gutter={8} align="middle">
             <Col md={5}>
-              {targetTreeLoading || !targetLayoutTreeStore.current
+              {draft.id && draft.field ? (
+                <SelectEx
+                  dataSource={[{ key: draft.extraData?.targetLayoutItem?.Text ?? draft.field, value: draft.field }]}
+                  value={draft.field}
+                  disabled
+                  onChange={() => {}}
+                  style={{ width: '99%' }}
+                />
+              ) : targetTreeLoading || !targetLayoutTreeStore.current
                 ? <span>{translate('Loading')}</span>
                 : <TreeSelect
                   store={targetLayoutTreeStore.current}
+                  autoExpandParent
                   onSelect={(_key: any, _node: any, record: any) => {
                     setDraftAction(prev => prev ? {
                       ...prev,
@@ -285,7 +304,7 @@ function OperationOnEventDetail({ selectedRecord, onSave, onCancel }: Props) {
             </Col>
             <Col span={4}>
               <SelectEx
-                dataSource={[{ key: 'SUM', value: 'SUM' }]}
+                dataSource={functionDs}
                 value={draft.extraData?.functionName}
                 onChange={(v: string) => setDraftAction(prev => prev ? { ...prev, extraData: { ...prev.extraData, functionName: v } } : prev)}
                 disabled={!draft.field}
@@ -303,8 +322,8 @@ function OperationOnEventDetail({ selectedRecord, onSave, onCancel }: Props) {
               />
             </Col>
             <Col>
-              <Button size="small" icon="check" onClick={handleConfirmAction} style={{ marginLeft: 4 }} />
-              <Button size="small" icon="close" onClick={() => setDraftAction(null)} style={{ marginLeft: 4 }} />
+              <Button size="small" icon="check" onClick={handleConfirmAction} style={{ marginLeft: 4, border: 'none', color: '#52c41a' }} />
+              <Button size="small" icon="close" onClick={() => setDraftAction(null)} style={{ marginLeft: 4, border: 'none', color: '#ff4d4f' }} />
             </Col>
           </Row>
         </Card>
@@ -339,8 +358,8 @@ function OperationOnEventDetail({ selectedRecord, onSave, onCancel }: Props) {
             </Col>
           )}
           <Col span={draft.operator === ColumnActions.setFieldsValue ? 4 : 8}>
-            <Button size="small" icon="check" onClick={handleConfirmAction} style={{ marginLeft: 4 }} />
-            <Button size="small" icon="close" onClick={() => setDraftAction(null)} style={{ marginLeft: 4 }} />
+            <Button size="small" icon="check" onClick={handleConfirmAction} style={{ marginLeft: 4, border: 'nonde', color: '#52c41a' }} />
+            <Button size="small" icon="close" onClick={() => setDraftAction(null)} style={{ marginLeft: 4, border: 'none', color: '#ff4d4f' }} />
           </Col>
         </Row>
         {draft.showJSBlock && (
@@ -398,7 +417,7 @@ function OperationOnEventDetail({ selectedRecord, onSave, onCancel }: Props) {
     >
       <Fieldset legend={translate('Events')} simpleMode collapsible={false}>
         {/* <Label>{translate('TheOccurrenceOfAnyOfTheFollowingConditionsWillTriggerTheOperation')}</Label> */}
-        <Label>'رخ دادن یک مورد از شروط زیر منجر به انجام عملیات میشود.'</Label>
+        <Label>رخ دادن یک مورد از شروط زیر منجر به انجام عملیات میشود.</Label>
 
         {eventRows.map(row => {
           const isEditing = draftEvent?.id === row.id;
@@ -410,7 +429,7 @@ function OperationOnEventDetail({ selectedRecord, onSave, onCancel }: Props) {
                 <Row >
                   <Col md={8}>
                     <SelectEx
-                      dataSource={layoutItems}
+                      dataSource={getFieldDataSource(draftEvent.field ?? '', draftEvent.fieldText ?? undefined)}
                       value={draftEvent.field}
                       onChange={(v: string) => {
                         const item = layoutItems.find(i => i.value === v);
@@ -428,17 +447,17 @@ function OperationOnEventDetail({ selectedRecord, onSave, onCancel }: Props) {
                     />
                   </Col>
                   <Col md={8}>
-                    <Button size="small" icon="check" onClick={handleConfirmEvent} style={{ marginLeft: 4 }} />
-                    <Button size="small" icon="close" onClick={() => setDraftEvent(null)} style={{ marginLeft: 4 }} />
+                    <Button size="small" icon="check" onClick={handleConfirmEvent} style={{ marginLeft: 4, border: 'none', color: '#52c41a' }} />
+                    <Button size="small" icon="close" onClick={() => setDraftEvent(null)} style={{ marginLeft: 4, border: 'none', color: '#ff4d4f' }} />
                   </Col>
                 </Row>
               ) : (
                 <Row>
                   <Col md={8}>
-                    <SelectEx dataSource={layoutItems} value={row.field} disabled style={{ width: '99%' }} />
+                    <SelectEx dataSource={getFieldDataSource(row.field, row.fieldText)} value={row.field} disabled onChange={() => { }} style={{ width: '99%' }} />
                   </Col>
                   <Col md={8}>
-                    <SelectEx dataSource={eventsDataSource} value={row.operator} disabled style={{ width: '99%' }} />
+                    <SelectEx dataSource={eventsDataSource} value={row.operator} disabled onChange={() => { }} style={{ width: '99%' }} />
                   </Col>
                   <Col md={8}>
                     <div className='ooe-list__card-actions'>
@@ -472,12 +491,22 @@ function OperationOnEventDetail({ selectedRecord, onSave, onCancel }: Props) {
                   <Col md={8}>
                     <TreeSelect
                       store={treeStore.current}
+                      autoExpandParent
                       onSelect={(_key: any, _node: any, record: any) => {
+                        const parent = record.ParentId && treeStore.current
+                          ? treeStore.current.findNode(record.ParentId)
+                          : null;
+                        const isInsideRelation = !!(parent?.Metadata?.isGrid && parent.ParentId);
+                        const isGridEvent = !!record.Metadata?.isGrid || isInsideRelation;
                         setDraftEvent(prev => prev ? {
                           ...prev,
                           field: record.Id,
                           fieldText: record.Text,
-                          extraData: { isGridEvent: record.Metadata?.isGrid, layoutItem: record },
+                          extraData: {
+                            isGridEvent,
+                            layoutItem: record,
+                            parentGrid: isInsideRelation ? parent : undefined,
+                          },
                         } : prev);
                       }}
                       //autoExpandParent
@@ -500,8 +529,8 @@ function OperationOnEventDetail({ selectedRecord, onSave, onCancel }: Props) {
                     />
                   </Col>
                   <Col md={8}>
-                    <Button size="small" icon="check" onClick={handleConfirmEvent} style={{ marginLeft: 4 }} />
-                    <Button size="small" icon="close" onClick={() => setDraftEvent(null)} style={{ marginLeft: 4 }} />
+                    <Button size="small" icon="check" onClick={handleConfirmEvent} style={{ marginLeft: 4, border: 'none', color: '#52c41a' }} />
+                    <Button size="small" icon="close" onClick={() => setDraftEvent(null)} style={{ marginLeft: 4, border: 'none', color: '#ff4d4f' }} />
                   </Col>
                 </Row>
               )
@@ -512,7 +541,8 @@ function OperationOnEventDetail({ selectedRecord, onSave, onCancel }: Props) {
         <Row justify="end">
           <Col>
             <Button type='primary' icon="plus" onClick={handleAddEvent} disabled={!!draftEvent} style={addBtnStyle}>
-              {translate('AddEvent')}
+              {/* {translate('AddEvent')} */}
+              افزودن رخداد
             </Button>
           </Col>
         </Row>
@@ -520,7 +550,7 @@ function OperationOnEventDetail({ selectedRecord, onSave, onCancel }: Props) {
 
       <Fieldset legend={translate('Actions')} simpleMode collapsible={false}>
         {/* <Label>{translate('AllDefinedOperationsAreExecuted')}</Label> */}
-        <Label>'تمامی عملیاتهای تعیین شده انجام میشوند.'</Label>
+        <Label>تمامی عملیاتهای تعیین شده انجام میشوند.</Label>
 
         {actionRows.map(row => {
           if (draftAction?.id === row.id) {
@@ -535,32 +565,48 @@ function OperationOnEventDetail({ selectedRecord, onSave, onCancel }: Props) {
             </div>
           );
           if (row.extraData?.isGridAction) {
+            const targetText = row.extraData.targetLayoutItem?.Text ?? row.field;
+            const gridColId = row.extraData.layoutItem?.Id;
+            const gridColText = row.extraData.layoutItem?.Text ?? gridColId;
             return (
               <Card>
                 <Row gutter={8} align="middle">
-                  <Col flex="auto">
-                    <span>{row.extraData.targetLayoutItem?.Text ?? layoutItems.find(i => i.value === row.field)?.key}</span>
-                    {' — '}
-                    <span>{translate(`DDM_${ColumnActions[row.operator]}`)}</span>
-                    {' '}
-                    <span>{row.extraData.functionName}</span>
-                    {' ('}
-                    <span>{row.extraData.layoutItem?.Text}</span>
-                    {')'}
+                  <Col md={5}>
+                    <SelectEx
+                      dataSource={[{ key: targetText, value: row.field }]}
+                      value={row.field}
+                      disabled
+                      onChange={() => { }}
+                      style={{ width: '99%' }}
+                    />
                   </Col>
-                  <Col md={8}>{actions}</Col>
+                  <Col span={4}>
+                    <SelectEx dataSource={gridActionsDs} value={row.operator} disabled onChange={() => { }} />
+                  </Col>
+                  <Col span={4}>
+                    <SelectEx dataSource={functionDs} value={row.extraData.functionName} disabled onChange={() => { }} />
+                  </Col>
+                  <Col span={6}>
+                    <SelectEx
+                      dataSource={[{ key: gridColText, value: gridColId }]}
+                      value={gridColId}
+                      disabled
+                      onChange={() => { }}
+                    />
+                  </Col>
+                  <Col>{actions}</Col>
                 </Row>
               </Card>
             );
           }
           return (
-            <Card style={{ borderColor:'#52c41a' }}>
+            <Card style={{ borderColor: '#52c41a' }}>
               <Row>
                 <Col md={8}>
-                  <SelectEx dataSource={layoutItems} value={row.field} disabled style={{ width: '99%' }} />
+                  <SelectEx dataSource={getFieldDataSource(row.field)} value={row.field} disabled onChange={() => { }} style={{ width: '99%' }} />
                 </Col>
                 <Col md={8}>
-                  <SelectEx dataSource={getActionsDs(row.field)} value={row.operator} disabled style={{ width: '99%' }} />
+                  <SelectEx dataSource={getActionsDs(row.field)} value={row.operator} disabled onChange={() => { }} style={{ width: '99%' }} />
                 </Col>
                 <Col md={8}>{actions}</Col>
               </Row>
@@ -573,7 +619,8 @@ function OperationOnEventDetail({ selectedRecord, onSave, onCancel }: Props) {
         <Row justify="end">
           <Col>
             <Button type='primary' icon="plus" onClick={handleAddAction} disabled={!!draftAction} style={addBtnStyle}>
-              {translate('AddAction')}
+              {/* {translate('AddAction')} */}
+              افزودن عملیات
             </Button>
           </Col>
         </Row>
